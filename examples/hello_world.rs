@@ -1,3 +1,10 @@
-fn main() -> Result<(), String> {
-    sge::start("Test App", 640, 480)
+use std::error::Error;
+
+struct App;
+
+impl sge::Application for App {}
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let mut app = App;
+    sge::start(&mut app, "Test App", 640, 480)
 }
