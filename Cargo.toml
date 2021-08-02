@@ -1,0 +1,17 @@
+[package]
+name = "sge"
+version = "0.1.0"
+authors = ["mcb2003 <mikey@blindcomputing.org>"]
+description = "A minimal game engine inspired by the OLC Pixel Game Engine"
+keywords = ["gamedev", "graphics", "sdl", "wrapper", "sge"]
+categories = ["game-development", "game-engines", "multimedia", "rendering::engine"]
+license = "MIT"
+edition = "2018"
+
+[features]
+bundled_sdl = ["sdl2/bundled"]
+static_sdl = ["sdl2/static-link"]
+
+[dependencies]
+once_cell = "1.8.0"
+sdl2 = "0.34.5"
