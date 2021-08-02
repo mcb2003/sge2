@@ -18,7 +18,7 @@ impl Engine {
             .window(title, width, height)
             .position_centered()
             .build()
-            //.map_err(|e| e.to_string())?
+            .map_err(|e| e.to_string())?
             .into_canvas()
             .build()
             .map_err(|e| e.to_string())?;
@@ -28,7 +28,8 @@ impl Engine {
 
 pub fn start(title: &str, width: u32, height: u32) -> Result<(), String> {
     ENGINE.with(|e| {
-        *e.borrow_mut() = Some(Engine::new(title, width, height)?);
+        let mut engine = e.try_borrow_mut().expect("An engine is already running in this thread");
+        *engine = Some(Engine::new(title, width, height)?);
         Ok(())
     })
 }
