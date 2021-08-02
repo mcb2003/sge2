@@ -1,3 +1,5 @@
+mod fps;
+
 use std::cell::RefCell;
 
 use sdl2::event::Event;
@@ -13,14 +15,13 @@ pub trait Application {
         Ok(true)
     }
 
-    fn on_update(&mut self) -> ApplicationResult {
+    fn on_update(&mut self, _elapsed_time: f64) -> ApplicationResult {
         Ok(true)
     }
 }
 
 struct Engine {
-    #[allow(dead_code)]
-    sdl: sdl2::Sdl,
+    pub sdl: sdl2::Sdl,
     #[allow(dead_code)]
     video: sdl2::VideoSubsystem,
     pub canvas: sdl2::render::WindowCanvas,
@@ -47,12 +48,22 @@ impl Engine {
 
 pub fn start<A: Application>(app: &mut A, title: &str, width: u32, height: u32) -> Result<(), Box<dyn std::error::Error>> {
     ENGINE.with(|e| {
+        use fps::FpsCounter;
+
+        let mut fps: FpsCounter;
         {
         let mut engine = e.try_borrow_mut().expect("An engine is already running in this thread");
-        *engine = Some(Engine::new(title, width, height)?);
+        let new = Engine::new(title, width, height)?;
+            fps = FpsCounter::new(new.sdl.timer()?);
+        *engine = Some(new);
     }
         if app.on_create()? {
-            while app.on_update()? {
+            loop {
+                let elapsed_time = fps.update(true);
+            if !app.on_update(elapsed_time)? {
+                return Ok(());
+            }
+
                 let mut engine = e.borrow_mut();
                 let engine = engine.as_mut().unwrap();
                 engine.canvas.present();
