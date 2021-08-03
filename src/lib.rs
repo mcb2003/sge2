@@ -77,12 +77,12 @@ pub fn start<A: Application>(
                 let elapsed_time = fps_counter.update(true);
                 if fps_counter.time_acc() >= 1.0 {
                     let fps = fps_counter.fps();
-                    let title = format!("{} ({} FPS)", title, fps.round() as u32);
+                    let title = format!("{} ({:.0} FPS)", title, fps.round());
 
                     let mut engine = e.borrow_mut();
                     let engine = engine.as_mut().unwrap();
                     // This fails silently on error
-                    engine.canvas.window_mut().set_title(title.as_str()).ok();
+                    engine.canvas.window_mut().set_title(&title).ok();
 
                     fps_counter.reset_average();
                 }
