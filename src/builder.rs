@@ -9,11 +9,12 @@ pub struct Builder<'a> {
     width: u32,
     height: u32,
     present_vsync: bool,
+    show_fps: bool,
 }
 
 impl<'a> Builder<'a> {
     pub fn new(title: &'a str, width: u32, height: u32) -> Self {
-        Self { title, width, height, present_vsync: true }
+        Self { title, width, height, present_vsync: true, show_fps: true }
     }
 
     pub fn present_vsync(mut self, val: bool) -> Self {
@@ -21,9 +22,14 @@ impl<'a> Builder<'a> {
         self
     }
 
+    pub fn show_fps(mut self, val: bool) -> Self {
+        self.show_fps = val;
+        self
+    }
+
     pub fn start<A: Application>(self, app: &mut A) -> Result<(), Box<dyn Error>> {
         // Destructure `self`
-        let Self { title, width, height, present_vsync} = self;
+        let Self { title, width, height, present_vsync, show_fps } = self;
 
     ENGINE.with(|e| {
         use crate::fps::FpsCounter;
@@ -39,8 +45,8 @@ impl<'a> Builder<'a> {
         }
         if app.on_create()? {
             loop {
-                let elapsed_time = fps_counter.update(true);
-                if fps_counter.time_acc() >= 1.0 {
+                let elapsed_time = fps_counter.update(show_fps);
+                if show_fps && fps_counter.time_acc() >= 1.0 {
                     let fps = fps_counter.fps();
                     let title = format!("{} ({:.0} FPS)", title, fps.round());
 
