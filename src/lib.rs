@@ -29,18 +29,20 @@ struct Engine {
 }
 
 impl Engine {
-    fn new(title: &str, width: u32, height: u32) -> Result<Self, String> {
+    fn new(title: &str, width: u32, height: u32, present_vsync: bool) -> Result<Self, String> {
         let sdl = sdl2::init()?;
         let video = sdl.video()?;
-        let canvas = video
+        let mut canvas = video
             .window(title, width, height)
             .position_centered()
             .build()
             .map_err(|e| e.to_string())?
             .into_canvas()
-            .accelerated()
-            .build()
-            .map_err(|e| e.to_string())?;
+            .accelerated();
+        if present_vsync {
+            canvas = canvas.present_vsync();
+        }
+        let canvas = canvas.build().map_err(|e| e.to_string())?;
         let events = sdl.event_pump()?;
         Ok(Self {
             sdl,
@@ -56,6 +58,7 @@ pub fn start<A: Application>(
     title: &str,
     width: u32,
     height: u32,
+    present_vsync: bool,
 ) -> Result<(), Box<dyn std::error::Error>> {
     ENGINE.with(|e| {
         use fps::FpsCounter;
@@ -65,7 +68,7 @@ pub fn start<A: Application>(
             let mut engine = e
                 .try_borrow_mut()
                 .expect("An engine is already running in this thread");
-            let new = Engine::new(title, width, height)?;
+            let new = Engine::new(title, width, height, present_vsync)?;
             fps_counter = FpsCounter::new(new.sdl.timer()?);
             *engine = Some(new);
         }
