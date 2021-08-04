@@ -8,6 +8,11 @@ mod fps;
 
 use std::cell::RefCell;
 
+pub use sdl2::{
+    pixels::Color,
+    rect::{Point, Rect},
+};
+
 thread_local! {
         static ENGINE: RefCell<Option<Engine>> = RefCell::new(None);
 }
@@ -28,5 +33,5 @@ pub trait Application {
 }
 
 pub mod prelude {
-    pub use sdl2::pixels::Color;
+    pub use crate::{Color, Point, Rect};
 }
