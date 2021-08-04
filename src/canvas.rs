@@ -40,8 +40,8 @@ pub fn draw_color() -> Color {
 
 pub fn draw_line<P1, P2>(start: P1, end: P2) -> Result<(), String>
 where
-P1: Into<Point>,
-P2: Into<Point>,
+    P1: Into<Point>,
+    P2: Into<Point>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -146,8 +146,6 @@ pub fn fill_rects<'a, R: Into<&'a [Rect]>>(rects: R) -> Result<(), String> {
         engine.canvas.fill_rects(rects.into())
     })
 }
-
-
 
 pub fn set_blend_mode(blend: BlendMode) {
     ENGINE.with(|e| {
