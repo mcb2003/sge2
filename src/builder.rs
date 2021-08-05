@@ -2,7 +2,7 @@ use std::error::Error;
 
 use sdl2::event::Event;
 
-use crate::{Application, Engine, ENGINE};
+use crate::{Application, Engine, Fullscreen, ENGINE};
 
 pub struct Builder<'a> {
     title: &'a str,
@@ -10,6 +10,7 @@ pub struct Builder<'a> {
     height: u32,
     present_vsync: bool,
     show_fps: bool,
+    fullscreen: Fullscreen,
 }
 
 impl<'a> Builder<'a> {
@@ -20,6 +21,7 @@ impl<'a> Builder<'a> {
             height,
             present_vsync: true,
             show_fps: true,
+            fullscreen: Fullscreen::Off,
         }
     }
 
@@ -33,6 +35,11 @@ impl<'a> Builder<'a> {
         self
     }
 
+    pub fn fullscreen(mut self, val: impl Into<Fullscreen>) -> Self {
+        self.fullscreen = val.into();
+        self
+    }
+
     pub fn start<A: Application>(self, app: &mut A) -> Result<(), Box<dyn Error>> {
         // Destructure `self`
         let Self {
@@ -41,6 +48,7 @@ impl<'a> Builder<'a> {
             height,
             present_vsync,
             show_fps,
+            fullscreen,
         } = self;
 
         ENGINE.with(|e| {
@@ -51,7 +59,7 @@ impl<'a> Builder<'a> {
                 let mut engine = e
                     .try_borrow_mut()
                     .expect("An engine is already running in this thread");
-                let new = Engine::new(title, width, height, present_vsync)?;
+                let new = Engine::new(title, width, height, present_vsync, fullscreen)?;
                 fps_counter = FpsCounter::new(new.sdl.timer()?);
                 *engine = Some(new);
             }

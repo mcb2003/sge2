@@ -1,3 +1,5 @@
+use crate::Fullscreen;
+
 pub struct Engine {
     pub sdl: sdl2::Sdl,
     #[allow(dead_code)]
@@ -7,11 +9,26 @@ pub struct Engine {
 }
 
 impl Engine {
-    pub fn new(title: &str, width: u32, height: u32, present_vsync: bool) -> Result<Self, String> {
+    pub fn new(
+        title: &str,
+        width: u32,
+        height: u32,
+        present_vsync: bool,
+        fullscreen: Fullscreen,
+    ) -> Result<Self, String> {
         let sdl = sdl2::init()?;
         let video = sdl.video()?;
-        let mut canvas = video
-            .window(title, width, height)
+        let mut canvas = video.window(title, width, height);
+        match fullscreen {
+            Fullscreen::Off => {} // Do nothing
+            Fullscreen::On => {
+                canvas.fullscreen();
+            }
+            Fullscreen::Desktop => {
+                canvas.fullscreen_desktop();
+            }
+        }
+        let mut canvas = canvas
             .position_centered()
             .build()
             .map_err(|e| e.to_string())?

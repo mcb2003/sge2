@@ -1,10 +1,6 @@
-use sdl2::{
-    pixels::Color,
-    rect::{Point, Rect},
-    render::{BlendMode, Texture},
-};
+use sdl2::render::{BlendMode, Texture};
 
-use crate::{ENGINE, NOT_INIT};
+use crate::{Color, Point, Rect, ENGINE, NOT_INIT};
 
 pub fn blend_mode() -> BlendMode {
     ENGINE.with(|e| {

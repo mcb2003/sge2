@@ -5,6 +5,8 @@ pub use canvas::*;
 mod engine;
 use engine::Engine;
 mod fps;
+mod fullscreen;
+pub use fullscreen::Fullscreen;
 
 use std::cell::RefCell;
 
