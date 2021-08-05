@@ -34,21 +34,6 @@ where
     pub fn get(&self, button: T) -> &Button {
         self.0.get(&button).unwrap()
     }
-
-    /// Returns if the specified button was pressed on this frame.
-    pub fn pressed(&self, button: T) -> bool {
-        self.0.get(&button).unwrap().pressed
-    }
-
-    /// Returns if the specified button was released on this frame.
-    pub fn released(&self, button: T) -> bool {
-        self.0.get(&button).unwrap().released
-    }
-
-    /// Returns if the specified button is held.
-    pub fn held(&self, button: T) -> bool {
-        self.0.get(&button).unwrap().held
-    }
 }
 
 impl<T> Index<T> for ButtonState<T>
