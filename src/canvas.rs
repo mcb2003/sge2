@@ -8,8 +8,8 @@ use crate::{ENGINE, NOT_INIT};
 
 pub fn blend_mode() -> BlendMode {
     ENGINE.with(|e| {
-        let mut engine = e.borrow_mut();
-        let engine = engine.as_mut().expect(NOT_INIT);
+        let engine = e.borrow();
+        let engine = engine.as_ref().expect(NOT_INIT);
         engine.canvas.blend_mode()
     })
 }
@@ -24,16 +24,16 @@ pub fn clear() {
 
 pub fn clip_rect() -> Option<Rect> {
     ENGINE.with(|e| {
-        let mut engine = e.borrow_mut();
-        let engine = engine.as_mut().expect(NOT_INIT);
+        let engine = e.borrow_mut();
+        let engine = engine.as_ref().expect(NOT_INIT);
         engine.canvas.clip_rect()
     })
 }
 
 pub fn draw_color() -> Color {
     ENGINE.with(|e| {
-        let mut engine = e.borrow_mut();
-        let engine = engine.as_mut().expect(NOT_INIT);
+        let engine = e.borrow();
+        let engine = engine.as_ref().expect(NOT_INIT);
         engine.canvas.draw_color()
     })
 }
@@ -181,8 +181,8 @@ pub fn set_viewport<R: Into<Option<Rect>>>(rect: R) {
 
 pub fn viewport() -> Rect {
     ENGINE.with(|e| {
-        let mut engine = e.borrow_mut();
-        let engine = engine.as_mut().expect(NOT_INIT);
+        let engine = e.borrow();
+        let engine = engine.as_ref().expect(NOT_INIT);
         engine.canvas.viewport()
     })
 }
