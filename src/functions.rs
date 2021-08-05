@@ -1,3 +1,5 @@
+#[cfg(feature = "gfx")]
+use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::render::{BlendMode, Texture};
 
 use crate::{
@@ -26,6 +28,21 @@ pub fn clip_rect() -> Option<Rect> {
         let engine = e.borrow_mut();
         let engine = engine.as_ref().expect(NOT_INIT);
         engine.canvas.clip_rect()
+    })
+}
+
+#[cfg(feature = "gfx")]
+pub fn draw_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String> {
+    ENGINE.with(|e| {
+        let mut engine = e.borrow_mut();
+        let engine = engine.as_mut().expect(NOT_INIT);
+        let center = center.into();
+        engine.canvas.circle(
+            center.x() as i16,
+            center.y() as i16,
+            radius,
+            engine.canvas.draw_color(),
+        )
     })
 }
 
@@ -126,6 +143,21 @@ where
             center,
             flip_horizontal,
             flip_vertical,
+        )
+    })
+}
+
+#[cfg(feature = "gfx")]
+pub fn fill_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String> {
+    ENGINE.with(|e| {
+        let mut engine = e.borrow_mut();
+        let engine = engine.as_mut().expect(NOT_INIT);
+        let center = center.into();
+        engine.canvas.filled_circle(
+            center.x() as i16,
+            center.y() as i16,
+            radius,
+            engine.canvas.draw_color(),
         )
     })
 }

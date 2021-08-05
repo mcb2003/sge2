@@ -9,10 +9,16 @@ license = "MIT"
 edition = "2018"
 
 [features]
+default = ["gfx"]
 bundled_sdl = ["sdl2/bundled"]
 static_sdl = ["sdl2/static-link"]
+gfx = ["sdl2/gfx"]
 
 [dependencies]
 fnv = "1.0.7"
 once_cell = "1.8.0"
 sdl2 = "0.34.5"
+
+[[example]]
+name = "moving_circle"
+required-features = ["gfx"]
