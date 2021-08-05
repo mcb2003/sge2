@@ -3,7 +3,7 @@ use crate::{
     Fullscreen,
 };
 
-pub struct Engine {
+pub(crate) struct Engine {
     pub sdl: sdl2::Sdl,
     #[allow(dead_code)]
     video: sdl2::VideoSubsystem,
