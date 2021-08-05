@@ -13,5 +13,6 @@ bundled_sdl = ["sdl2/bundled"]
 static_sdl = ["sdl2/static-link"]
 
 [dependencies]
+fnv = "1.0.7"
 once_cell = "1.8.0"
 sdl2 = "0.34.5"

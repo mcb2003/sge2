@@ -1,12 +1,13 @@
 mod builder;
 pub use builder::Builder;
-mod canvas;
-pub use canvas::*;
 mod engine;
 use engine::Engine;
+mod functions;
+pub use functions::*;
 mod fps;
 mod fullscreen;
 pub use fullscreen::Fullscreen;
+pub mod input;
 
 use std::cell::RefCell;
 
@@ -35,5 +36,8 @@ pub trait Application {
 }
 
 pub mod prelude {
-    pub use crate::{Color, Point, Rect};
+    pub use crate::{
+        input::{MouseButton, Scancode},
+        Color, Point, Rect,
+    };
 }

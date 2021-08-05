@@ -84,7 +84,7 @@ impl<'a> Builder<'a> {
 
                     let mut engine = e.borrow_mut();
                     let engine = engine.as_mut().unwrap();
-                    engine.canvas.present();
+                    engine.update();
 
                     for event in engine.events.poll_iter() {
                         if let Event::Quit { .. } = event {

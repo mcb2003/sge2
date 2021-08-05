@@ -1,6 +1,9 @@
 use sdl2::render::{BlendMode, Texture};
 
-use crate::{Color, Point, Rect, ENGINE, NOT_INIT};
+use crate::{
+    input::{Button, MouseButton, Scancode},
+    Color, Point, Rect, ENGINE, NOT_INIT,
+};
 
 pub fn blend_mode() -> BlendMode {
     ENGINE.with(|e| {
@@ -140,6 +143,30 @@ pub fn fill_rects<'a, R: Into<&'a [Rect]>>(rects: R) -> Result<(), String> {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
         engine.canvas.fill_rects(rects.into())
+    })
+}
+
+pub fn key(key: Scancode) -> Button {
+    ENGINE.with(|e| {
+        let engine = e.borrow();
+        let engine = engine.as_ref().expect(NOT_INIT);
+        engine.input.keyboard[key]
+    })
+}
+
+pub fn mouse_button(button: MouseButton) -> Button {
+    ENGINE.with(|e| {
+        let engine = e.borrow();
+        let engine = engine.as_ref().expect(NOT_INIT);
+        engine.input.mouse.buttons[button]
+    })
+}
+
+pub fn mouse_pos() -> Point {
+    ENGINE.with(|e| {
+        let engine = e.borrow();
+        let engine = engine.as_ref().expect(NOT_INIT);
+        Point::new(engine.input.mouse.x, engine.input.mouse.y)
     })
 }
 
