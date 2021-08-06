@@ -40,6 +40,15 @@ pub trait Application {
     }
 }
 
+impl<F> Application for F
+where
+    F: FnMut(f64) -> ApplicationResult,
+{
+    fn on_update(&mut self, elapsed_time: f64) -> ApplicationResult {
+        self(elapsed_time)
+    }
+}
+
 pub mod prelude {
     pub use crate::{
         input::{MouseButton, Scancode},
