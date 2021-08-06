@@ -1,13 +1,18 @@
 mod builder;
 pub use builder::Builder;
+mod draw;
+pub use draw::*;
 mod engine;
 use engine::Engine;
-mod functions;
-pub use functions::*;
 mod fps;
 mod fullscreen;
 pub use fullscreen::Fullscreen;
+#[cfg(feature = "gfx")]
+mod gfx;
+#[cfg(feature = "gfx")]
+pub use gfx::*;
 pub mod input;
+pub use input::functions::*;
 
 use std::cell::RefCell;
 

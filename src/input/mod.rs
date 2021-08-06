@@ -8,6 +8,8 @@ use state::ButtonState;
 mod mouse;
 pub(crate) use mouse::MouseState;
 
+pub(crate) mod functions;
+
 pub use sdl2::{keyboard::Scancode, mouse::MouseButton};
 
 pub(crate) type KeyboardState = ButtonState<Scancode>;

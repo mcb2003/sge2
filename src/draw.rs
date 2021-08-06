@@ -1,11 +1,6 @@
-#[cfg(feature = "gfx")]
-use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::render::{BlendMode, Texture};
 
-use crate::{
-    input::{Button, MouseButton, Scancode},
-    Color, Point, Rect, ENGINE, NOT_INIT,
-};
+use crate::{Color, Point, Rect, ENGINE, NOT_INIT};
 
 pub fn blend_mode() -> BlendMode {
     ENGINE.with(|e| {
@@ -28,21 +23,6 @@ pub fn clip_rect() -> Option<Rect> {
         let engine = e.borrow_mut();
         let engine = engine.as_ref().expect(NOT_INIT);
         engine.canvas.clip_rect()
-    })
-}
-
-#[cfg(feature = "gfx")]
-pub fn draw_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String> {
-    ENGINE.with(|e| {
-        let mut engine = e.borrow_mut();
-        let engine = engine.as_mut().expect(NOT_INIT);
-        let center = center.into();
-        engine.canvas.circle(
-            center.x() as i16,
-            center.y() as i16,
-            radius,
-            engine.canvas.draw_color(),
-        )
     })
 }
 
@@ -147,21 +127,6 @@ where
     })
 }
 
-#[cfg(feature = "gfx")]
-pub fn fill_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String> {
-    ENGINE.with(|e| {
-        let mut engine = e.borrow_mut();
-        let engine = engine.as_mut().expect(NOT_INIT);
-        let center = center.into();
-        engine.canvas.filled_circle(
-            center.x() as i16,
-            center.y() as i16,
-            radius,
-            engine.canvas.draw_color(),
-        )
-    })
-}
-
 pub fn fill_rect<R: Into<Rect>>(rect: R) -> Result<(), String> {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -177,31 +142,6 @@ pub fn fill_rects<'a, R: Into<&'a [Rect]>>(rects: R) -> Result<(), String> {
         engine.canvas.fill_rects(rects.into())
     })
 }
-
-pub fn key(key: Scancode) -> Button {
-    ENGINE.with(|e| {
-        let engine = e.borrow();
-        let engine = engine.as_ref().expect(NOT_INIT);
-        engine.input.keyboard[key]
-    })
-}
-
-pub fn mouse_button(button: MouseButton) -> Button {
-    ENGINE.with(|e| {
-        let engine = e.borrow();
-        let engine = engine.as_ref().expect(NOT_INIT);
-        engine.input.mouse.buttons[button]
-    })
-}
-
-pub fn mouse_pos() -> Point {
-    ENGINE.with(|e| {
-        let engine = e.borrow();
-        let engine = engine.as_ref().expect(NOT_INIT);
-        Point::new(engine.input.mouse.x, engine.input.mouse.y)
-    })
-}
-
 pub fn set_blend_mode(blend: BlendMode) {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
