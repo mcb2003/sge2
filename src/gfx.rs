@@ -2,12 +2,16 @@ use std::convert::TryInto;
 
 use sdl2::gfx::primitives::DrawRenderer;
 
-use crate::{Point, Color, ENGINE, NOT_INIT};
+use crate::{Color, Point, ENGINE, NOT_INIT};
 
+const CHAR_X_BOUNDS: &str = "Character x coordinate out of bounds, must fit in an i16";
+const CHAR_Y_BOUNDS: &str = "Character y coordinate out of bounds, must fit in an i16";
 const CIRCLE_X_BOUNDS: &str = "Circle x coordinate out of bounds, must fit in an i16";
 const CIRCLE_Y_BOUNDS: &str = "Circle y coordinate out of bounds, must fit in an i16";
 const LINE_X_BOUNDS: &str = "Line x coordinate out of bounds, must fit in an i16";
 const LINE_Y_BOUNDS: &str = "Line y coordinate out of bounds, must fit in an i16";
+const STRING_X_BOUNDS: &str = "String x coordinate out of bounds, must fit in an i16";
+const STRING_Y_BOUNDS: &str = "String y coordinate out of bounds, must fit in an i16";
 
 fn to_xy<P: Into<Point>>(p: P, x_bounds: &'static str, y_bounds: &'static str) -> (i16, i16) {
     let p = p.into();
@@ -24,10 +28,25 @@ pub fn anti_aliased() -> bool {
     })
 }
 
+pub fn draw_char<P, C>(pos: P, character: char, color: C) -> Result<(), String>
+where
+    P: Into<Point>,
+    C: Into<Color>,
+{
+    ENGINE.with(|e| {
+        let mut engine = e.borrow_mut();
+        let engine = engine.as_mut().expect(NOT_INIT);
+
+        let (x, y) = to_xy(pos, CHAR_X_BOUNDS, CHAR_Y_BOUNDS);
+
+        engine.canvas.character(x, y, character, color.into())
+    })
+}
+
 pub fn draw_circle<P, C>(center: P, radius: i16, color: C) -> Result<(), String>
 where
-P: Into<Point>,
-C: Into<Color>,
+    P: Into<Point>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -64,31 +83,37 @@ where
             DrawRenderer::line
         };
 
-        func(
-            &engine.canvas,
-            start_x,
-            start_y,
-            end_x,
-            end_y,
-            color.into(),
-        )
+        func(&engine.canvas, start_x, start_y, end_x, end_y, color.into())
     })
 }
 
-pub fn fill_circle<P, C>(center: P, radius: i16, color: C) -> Result<(), String>
+pub fn draw_string<P, C>(pos: P, string: &str, color: C) -> Result<(), String>
 where
-P: Into<Point>,
-C: Into<Color>,
+    P: Into<Point>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
 
-let (x, y) = to_xy(center, CIRCLE_X_BOUNDS, CIRCLE_Y_BOUNDS);
+        let (x, y) = to_xy(pos, STRING_X_BOUNDS, STRING_Y_BOUNDS);
 
-        engine
-            .canvas
-            .filled_circle(x, y, radius, color.into())
+        engine.canvas.string(x, y, string, color.into())
+    })
+}
+
+pub fn fill_circle<P, C>(center: P, radius: i16, color: C) -> Result<(), String>
+where
+    P: Into<Point>,
+    C: Into<Color>,
+{
+    ENGINE.with(|e| {
+        let mut engine = e.borrow_mut();
+        let engine = engine.as_mut().expect(NOT_INIT);
+
+        let (x, y) = to_xy(center, CIRCLE_X_BOUNDS, CIRCLE_Y_BOUNDS);
+
+        engine.canvas.filled_circle(x, y, radius, color.into())
     })
 }
 

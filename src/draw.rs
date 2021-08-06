@@ -44,8 +44,8 @@ where
 
 pub fn draw_lines<'a, P, C>(points: P, color: C) -> Result<(), String>
 where
-P: Into<&'a [Point]>,
-C: Into<Color>,
+    P: Into<&'a [Point]>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -57,8 +57,8 @@ C: Into<Color>,
 
 pub fn draw_point<P, C>(point: P, color: C) -> Result<(), String>
 where
-P: Into<Point>,
-C: Into<Color>,
+    P: Into<Point>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -70,8 +70,8 @@ C: Into<Color>,
 
 pub fn draw_points<'a, P, C>(points: P, color: C) -> Result<(), String>
 where
-P: Into<&'a [Point]>,
-C: Into<Color>,
+    P: Into<&'a [Point]>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -83,8 +83,8 @@ C: Into<Color>,
 
 pub fn draw_rect<R, C>(rect: R, color: C) -> Result<(), String>
 where
-R: Into<Rect>,
-C: Into<Color>,
+    R: Into<Rect>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -96,8 +96,8 @@ C: Into<Color>,
 
 pub fn draw_rects<'a, R, C>(rects: R, color: C) -> Result<(), String>
 where
-R: Into<&'a [Rect]>,
-C: Into<Color>,
+    R: Into<&'a [Rect]>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -150,8 +150,8 @@ where
 
 pub fn fill_rect<R, C>(rect: R, color: C) -> Result<(), String>
 where
-R: Into<Rect>,
-C: Into<Color>,
+    R: Into<Rect>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -163,8 +163,8 @@ C: Into<Color>,
 
 pub fn fill_rects<'a, R, C>(rects: R, color: C) -> Result<(), String>
 where
-R: Into<&'a [Rect]>,
-C: Into<Color>,
+    R: Into<&'a [Rect]>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
