@@ -9,6 +9,13 @@ const CIRCLE_Y_BOUNDS: &str = "Circle y coordinate out of bounds, must fit in an
 const LINE_X_BOUNDS: &str = "Line x coordinate out of bounds, must fit in an i16";
 const LINE_Y_BOUNDS: &str = "Line y coordinate out of bounds, must fit in an i16";
 
+fn to_xy<P: Into<Point>>(p: P, x_bounds: &'static str, y_bounds: &'static str) -> (i16, i16) {
+    let p = p.into();
+    let x = p.x().try_into().expect(x_bounds);
+    let y = p.y().try_into().expect(y_bounds);
+    (x, y)
+}
+
 pub fn anti_aliased() -> bool {
     ENGINE.with(|e| {
         let engine = e.borrow();
@@ -22,9 +29,7 @@ pub fn draw_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String>
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
 
-        let center = center.into();
-        let x: i16 = center.x().try_into().expect(CIRCLE_X_BOUNDS);
-        let y: i16 = center.y().try_into().expect(CIRCLE_Y_BOUNDS);
+        let (x, y) = to_xy(center, CIRCLE_X_BOUNDS, CIRCLE_Y_BOUNDS);
 
         let func = if engine.anti_alias {
             DrawRenderer::aa_circle
@@ -45,12 +50,8 @@ where
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
 
-        let start = start.into();
-        let start_x: i16 = start.x().try_into().expect(LINE_X_BOUNDS);
-        let start_y: i16 = start.y().try_into().expect(LINE_Y_BOUNDS);
-        let end = end.into();
-        let end_x: i16 = end.x().try_into().expect(LINE_X_BOUNDS);
-        let end_y: i16 = end.y().try_into().expect(LINE_Y_BOUNDS);
+        let (start_x, start_y) = to_xy(start, LINE_X_BOUNDS, LINE_Y_BOUNDS);
+        let (end_x, end_y) = to_xy(end, LINE_X_BOUNDS, LINE_Y_BOUNDS);
 
         let func = if engine.anti_alias {
             DrawRenderer::aa_line
@@ -74,9 +75,7 @@ pub fn fill_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String>
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
 
-        let center = center.into();
-        let x: i16 = center.x().try_into().expect(CIRCLE_X_BOUNDS);
-        let y: i16 = center.y().try_into().expect(CIRCLE_Y_BOUNDS);
+let (x, y) = to_xy(center, CIRCLE_X_BOUNDS, CIRCLE_Y_BOUNDS);
 
         engine
             .canvas
