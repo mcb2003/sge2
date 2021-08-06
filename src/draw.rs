@@ -34,6 +34,7 @@ pub fn draw_color() -> Color {
     })
 }
 
+#[cfg(not(feature = "gfx"))]
 pub fn draw_line<P1, P2>(start: P1, end: P2) -> Result<(), String>
 where
     P1: Into<Point>,
