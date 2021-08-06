@@ -4,6 +4,7 @@ use sdl2::event::Event;
 
 use crate::{Application, Engine, Fullscreen, ENGINE};
 
+#[must_use = "Builders do nothing unless an Application is started with them"]
 pub struct Builder<'a> {
     title: &'a str,
     width: u32,
