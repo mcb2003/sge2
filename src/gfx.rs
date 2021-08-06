@@ -7,6 +7,14 @@ use crate::{Point, ENGINE, NOT_INIT};
 const CIRCLE_X_BOUNDS: &str = "Circle x coordinate out of bounds, must fit in an i16";
 const CIRCLE_Y_BOUNDS: &str = "Circle y coordinate out of bounds, must fit in an i16";
 
+pub fn anti_aliased() -> bool {
+    ENGINE.with(|e| {
+        let engine = e.borrow();
+        let engine = engine.as_ref().expect(NOT_INIT);
+        engine.anti_alias
+    })
+}
+
 pub fn draw_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String> {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -38,5 +46,13 @@ pub fn fill_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String>
         engine
             .canvas
             .filled_circle(x, y, radius, engine.canvas.draw_color())
+    })
+}
+
+pub fn set_anti_alias(anti_alias: bool) {
+    ENGINE.with(|e| {
+        let mut engine = e.borrow_mut();
+        let engine = engine.as_mut().expect(NOT_INIT);
+        engine.anti_alias = anti_alias;
     })
 }
