@@ -11,12 +11,18 @@ pub fn draw_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String>
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+
         let center = center.into();
         let x: i16 = center.x().try_into().expect(CIRCLE_X_BOUNDS);
         let y: i16 = center.y().try_into().expect(CIRCLE_Y_BOUNDS);
-        engine
-            .canvas
-            .circle(x, y, radius, engine.canvas.draw_color())
+
+        let func = if engine.anti_alias {
+            DrawRenderer::aa_circle
+        } else {
+            DrawRenderer::circle
+        };
+
+        func(&engine.canvas, x, y, radius, engine.canvas.draw_color())
     })
 }
 
@@ -24,9 +30,11 @@ pub fn fill_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String>
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+
         let center = center.into();
         let x: i16 = center.x().try_into().expect(CIRCLE_X_BOUNDS);
         let y: i16 = center.y().try_into().expect(CIRCLE_Y_BOUNDS);
+
         engine
             .canvas
             .filled_circle(x, y, radius, engine.canvas.draw_color())

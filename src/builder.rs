@@ -11,6 +11,8 @@ pub struct Builder<'a> {
     present_vsync: bool,
     show_fps: bool,
     fullscreen: Fullscreen,
+    #[cfg(feature = "gfx")]
+    anti_alias: bool,
 }
 
 impl<'a> Builder<'a> {
@@ -22,6 +24,8 @@ impl<'a> Builder<'a> {
             present_vsync: true,
             show_fps: true,
             fullscreen: Fullscreen::Off,
+            #[cfg(feature = "gfx")]
+            anti_alias: false,
         }
     }
 
@@ -40,6 +44,12 @@ impl<'a> Builder<'a> {
         self
     }
 
+    #[cfg(feature = "gfx")]
+    pub fn anti_alias(mut self, val: bool) -> Self {
+        self.anti_alias = val;
+        self
+    }
+
     pub fn start<A: Application>(self, app: &mut A) -> Result<(), Box<dyn Error>> {
         // Destructure `self`
         let Self {
@@ -49,6 +59,8 @@ impl<'a> Builder<'a> {
             present_vsync,
             show_fps,
             fullscreen,
+            #[cfg(feature = "gfx")]
+            anti_alias,
         } = self;
 
         ENGINE.with(|e| {
@@ -59,7 +71,15 @@ impl<'a> Builder<'a> {
                 let mut engine = e
                     .try_borrow_mut()
                     .expect("An engine is already running in this thread");
-                let new = Engine::new(title, width, height, present_vsync, fullscreen)?;
+                let new = Engine::new(
+                    title,
+                    width,
+                    height,
+                    present_vsync,
+                    fullscreen,
+                    #[cfg(feature = "gfx")]
+                    anti_alias,
+                )?;
                 fps_counter = FpsCounter::new(new.sdl.timer()?);
                 *engine = Some(new);
             }

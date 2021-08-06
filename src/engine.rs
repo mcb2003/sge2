@@ -10,6 +10,8 @@ pub(crate) struct Engine {
     pub canvas: sdl2::render::WindowCanvas,
     pub events: sdl2::EventPump,
     pub input: InputState,
+    #[cfg(feature = "gfx")]
+    pub anti_alias: bool,
 }
 
 impl Engine {
@@ -19,6 +21,7 @@ impl Engine {
         height: u32,
         present_vsync: bool,
         fullscreen: Fullscreen,
+        #[cfg(feature = "gfx")] anti_alias: bool,
     ) -> Result<Self, String> {
         let sdl = sdl2::init()?;
         let video = sdl.video()?;
@@ -59,6 +62,8 @@ impl Engine {
             canvas,
             events,
             input,
+            #[cfg(feature = "gfx")]
+            anti_alias,
         })
     }
 
