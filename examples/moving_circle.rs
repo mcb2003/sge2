@@ -14,7 +14,10 @@ struct App {
 
 impl App {
     pub fn new() -> Self {
-        Self { x: 10.0, y: 10.0 }
+        Self {
+            x: 10.0 + CIRCLE_SIZE as f64,
+            y: 10.0 + CIRCLE_SIZE as f64,
+        }
     }
 }
 
@@ -22,13 +25,13 @@ impl sge::Application for App {
     fn on_update(&mut self, elapsed_time: f64) -> sge::ApplicationResult {
         // Move the circleangle with the keyboard
         if sge::key(Scancode::Up).held {
-            self.y = (self.y - MOVEMENT_SPEED * elapsed_time).max(0.0);
+            self.y = (self.y - MOVEMENT_SPEED * elapsed_time).max(CIRCLE_SIZE as f64);
         } else if sge::key(Scancode::Down).held {
             self.y = (self.y + MOVEMENT_SPEED * elapsed_time)
                 .min((SCREEN_HEIGHT - CIRCLE_SIZE as u32) as f64);
         }
         if sge::key(Scancode::Left).held {
-            self.x = (self.x - MOVEMENT_SPEED * elapsed_time).max(0.0);
+            self.x = (self.x - MOVEMENT_SPEED * elapsed_time).max(CIRCLE_SIZE as f64);
         } else if sge::key(Scancode::Right).held {
             self.x = (self.x + MOVEMENT_SPEED * elapsed_time)
                 .min((SCREEN_WIDTH - CIRCLE_SIZE as u32) as f64);
