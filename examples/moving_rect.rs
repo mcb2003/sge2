@@ -40,15 +40,11 @@ impl sge::Application for App {
             self.y = pos.y() as f64;
         }
         // Fill the screen
-        sge::set_draw_color(Color::BLACK);
-        sge::clear();
-        sge::set_draw_color(Color::GRAY);
-        sge::fill_rect(Rect::new(
-            self.x as i32,
-            self.y as i32,
-            RECT_SIZE,
-            RECT_SIZE,
-        ))?;
+        sge::clear(Color::BLACK);
+        sge::fill_rect(
+            Rect::new(self.x as i32, self.y as i32, RECT_SIZE, RECT_SIZE),
+            Color::GRAY,
+        )?;
         Ok(true)
     }
 }

@@ -10,10 +10,11 @@ pub fn blend_mode() -> BlendMode {
     })
 }
 
-pub fn clear() {
+pub fn clear<C: Into<Color>>(color: C) {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+        engine.canvas.set_draw_color(color);
         engine.canvas.clear()
     })
 }
@@ -26,63 +27,82 @@ pub fn clip_rect() -> Option<Rect> {
     })
 }
 
-pub fn draw_color() -> Color {
-    ENGINE.with(|e| {
-        let engine = e.borrow();
-        let engine = engine.as_ref().expect(NOT_INIT);
-        engine.canvas.draw_color()
-    })
-}
-
 #[cfg(not(feature = "gfx"))]
-pub fn draw_line<P1, P2>(start: P1, end: P2) -> Result<(), String>
+pub fn draw_line<P1, P2, C>(start: P1, end: P2, color: C) -> Result<(), String>
 where
     P1: Into<Point>,
     P2: Into<Point>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+        engine.canvas.set_draw_color(color);
         engine.canvas.draw_line(start, end)
     })
 }
 
-pub fn draw_lines<'a, P: Into<&'a [Point]>>(points: P) -> Result<(), String> {
+pub fn draw_lines<'a, P, C>(points: P, color: C) -> Result<(), String>
+where
+P: Into<&'a [Point]>,
+C: Into<Color>,
+{
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+        engine.canvas.set_draw_color(color);
         engine.canvas.draw_lines(points)
     })
 }
 
-pub fn draw_point<P: Into<Point>>(point: P) -> Result<(), String> {
+pub fn draw_point<P, C>(point: P, color: C) -> Result<(), String>
+where
+P: Into<Point>,
+C: Into<Color>,
+{
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+        engine.canvas.set_draw_color(color);
         engine.canvas.draw_point(point)
     })
 }
 
-pub fn draw_points<'a, P: Into<&'a [Point]>>(points: P) -> Result<(), String> {
+pub fn draw_points<'a, P, C>(points: P, color: C) -> Result<(), String>
+where
+P: Into<&'a [Point]>,
+C: Into<Color>,
+{
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+        engine.canvas.set_draw_color(color);
         engine.canvas.draw_points(points)
     })
 }
 
-pub fn draw_rect<R: Into<Rect>>(rect: R) -> Result<(), String> {
+pub fn draw_rect<R, C>(rect: R, color: C) -> Result<(), String>
+where
+R: Into<Rect>,
+C: Into<Color>,
+{
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+        engine.canvas.set_draw_color(color);
         engine.canvas.draw_rect(rect.into())
     })
 }
 
-pub fn draw_rects<'a, R: Into<&'a [Rect]>>(rects: R) -> Result<(), String> {
+pub fn draw_rects<'a, R, C>(rects: R, color: C) -> Result<(), String>
+where
+R: Into<&'a [Rect]>,
+C: Into<Color>,
+{
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+        engine.canvas.set_draw_color(color);
         engine.canvas.draw_rects(rects.into())
     })
 }
@@ -128,21 +148,32 @@ where
     })
 }
 
-pub fn fill_rect<R: Into<Rect>>(rect: R) -> Result<(), String> {
+pub fn fill_rect<R, C>(rect: R, color: C) -> Result<(), String>
+where
+R: Into<Rect>,
+C: Into<Color>,
+{
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+        engine.canvas.set_draw_color(color);
         engine.canvas.fill_rect(rect.into())
     })
 }
 
-pub fn fill_rects<'a, R: Into<&'a [Rect]>>(rects: R) -> Result<(), String> {
+pub fn fill_rects<'a, R, C>(rects: R, color: C) -> Result<(), String>
+where
+R: Into<&'a [Rect]>,
+C: Into<Color>,
+{
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
+        engine.canvas.set_draw_color(color);
         engine.canvas.fill_rects(rects.into())
     })
 }
+
 pub fn set_blend_mode(blend: BlendMode) {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -156,14 +187,6 @@ pub fn set_clip_rect<R: Into<Option<Rect>>>(rect: R) {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
         engine.canvas.set_clip_rect(rect)
-    })
-}
-
-pub fn set_draw_color<C: Into<Color>>(color: C) {
-    ENGINE.with(|e| {
-        let mut engine = e.borrow_mut();
-        let engine = engine.as_mut().expect(NOT_INIT);
-        engine.canvas.set_draw_color(color)
     })
 }
 

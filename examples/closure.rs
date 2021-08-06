@@ -19,8 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             flipper = !flipper;
         }
         // Fill the screen with the current colour
-        sge::set_draw_color(Color::RGB(col as u8, 0, 255 - col as u8));
-        sge::clear();
+        sge::clear(Color::RGB(col as u8, 0, 255 - col as u8));
         // Change the colour
         if !flipper {
             col -= CYCLE_SPEED * elapsed_time as f32;

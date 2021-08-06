@@ -27,8 +27,7 @@ impl sge::Application for App {
             self.flipper = !self.flipper;
         }
         // Fill the screen with the current colour
-        sge::set_draw_color(Color::RGB(self.col as u8, 0, 255 - self.col as u8));
-        sge::clear();
+        sge::clear(Color::RGB(self.col as u8, 0, 255 - self.col as u8));
         // Change the colour
         if !self.flipper {
             self.col -= CYCLE_SPEED * elapsed_time as f32;

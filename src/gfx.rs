@@ -2,7 +2,7 @@ use std::convert::TryInto;
 
 use sdl2::gfx::primitives::DrawRenderer;
 
-use crate::{Point, ENGINE, NOT_INIT};
+use crate::{Point, Color, ENGINE, NOT_INIT};
 
 const CIRCLE_X_BOUNDS: &str = "Circle x coordinate out of bounds, must fit in an i16";
 const CIRCLE_Y_BOUNDS: &str = "Circle y coordinate out of bounds, must fit in an i16";
@@ -24,7 +24,11 @@ pub fn anti_aliased() -> bool {
     })
 }
 
-pub fn draw_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String> {
+pub fn draw_circle<P, C>(center: P, radius: i16, color: C) -> Result<(), String>
+where
+P: Into<Point>,
+C: Into<Color>,
+{
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
@@ -37,14 +41,15 @@ pub fn draw_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String>
             DrawRenderer::circle
         };
 
-        func(&engine.canvas, x, y, radius, engine.canvas.draw_color())
+        func(&engine.canvas, x, y, radius, color.into())
     })
 }
 
-pub fn draw_line<P1, P2>(start: P1, end: P2) -> Result<(), String>
+pub fn draw_line<P1, P2, C>(start: P1, end: P2, color: C) -> Result<(), String>
 where
     P1: Into<Point>,
     P2: Into<Point>,
+    C: Into<Color>,
 {
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
@@ -65,12 +70,16 @@ where
             start_y,
             end_x,
             end_y,
-            engine.canvas.draw_color(),
+            color.into(),
         )
     })
 }
 
-pub fn fill_circle<P: Into<Point>>(center: P, radius: i16) -> Result<(), String> {
+pub fn fill_circle<P, C>(center: P, radius: i16, color: C) -> Result<(), String>
+where
+P: Into<Point>,
+C: Into<Color>,
+{
     ENGINE.with(|e| {
         let mut engine = e.borrow_mut();
         let engine = engine.as_mut().expect(NOT_INIT);
@@ -79,7 +88,7 @@ let (x, y) = to_xy(center, CIRCLE_X_BOUNDS, CIRCLE_Y_BOUNDS);
 
         engine
             .canvas
-            .filled_circle(x, y, radius, engine.canvas.draw_color())
+            .filled_circle(x, y, radius, color.into())
     })
 }
 
