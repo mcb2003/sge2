@@ -1,10 +1,11 @@
 use std::error::Error;
 
-struct App;
-
-impl sge::Application for App {}
+use sge::prelude::*;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut app = App;
-    sge::Builder::new("Test App", 640, 480).start(&mut app)
+    sge::Builder::new("Hello World", 640, 480).start(&mut |_elapsed_time| {
+        sge::clear(Color::BLACK);
+        sge::draw_string(Point::new(80, 80), "Some test text", Color::WHITE)?;
+        Ok(true)
+    })
 }

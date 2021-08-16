@@ -8,6 +8,7 @@ pub(crate) struct Engine {
     #[allow(dead_code)]
     video: sdl2::VideoSubsystem,
     pub canvas: sdl2::render::WindowCanvas,
+    pub texture_creator: sdl2::render::TextureCreator<sdl2::video::WindowContext>,
     pub events: sdl2::EventPump,
     pub input: InputState,
     #[cfg(feature = "gfx")]
@@ -49,6 +50,7 @@ impl Engine {
         }
 
         let canvas = canvas.build().map_err(|e| e.to_string())?;
+        let texture_creator = canvas.texture_creator();
 
         let events = sdl.event_pump()?;
         let input = InputState {
@@ -60,6 +62,7 @@ impl Engine {
             sdl,
             video,
             canvas,
+            texture_creator,
             events,
             input,
             #[cfg(feature = "gfx")]

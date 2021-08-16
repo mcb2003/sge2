@@ -1,4 +1,6 @@
 mod builder;
+mod texture;
+pub use texture::*;
 pub use builder::Builder;
 mod draw;
 pub use draw::*;
@@ -19,10 +21,13 @@ use std::cell::RefCell;
 pub use sdl2::{
     pixels::Color,
     rect::{Point, Rect},
+    render::{Texture, TextureValueError},
 };
 
+use once_cell::unsync::OnceCell;
+
 thread_local! {
-        static ENGINE: RefCell<Option<Engine>> = RefCell::new(None);
+        static ENGINE: OnceCell<RefCell<Engine>> = OnceCell::new();
 }
 
 /// Panic message

@@ -1,8 +1,8 @@
-use std::error::Error;
+use std::{error::Error, cell::RefCell};
 
 use sdl2::event::Event;
 
-use crate::{Application, Engine, Fullscreen, ENGINE};
+use crate::{Application, Engine, Fullscreen, ENGINE, NOT_INIT};
 
 #[must_use = "Builders do nothing unless an Application is started with them"]
 pub struct Builder<'a> {
@@ -69,9 +69,6 @@ impl<'a> Builder<'a> {
 
             let mut fps_counter: FpsCounter;
             {
-                let mut engine = e
-                    .try_borrow_mut()
-                    .expect("An engine is already running in this thread");
                 let new = Engine::new(
                     title,
                     width,
@@ -82,7 +79,9 @@ impl<'a> Builder<'a> {
                     anti_alias,
                 )?;
                 fps_counter = FpsCounter::new(new.sdl.timer()?);
-                *engine = Some(new);
+                if let Err(_) = e.set(RefCell::new(new)) {
+                    panic!("An engine was already started in this thread");
+                }
             }
             if app.on_create()? {
                 loop {
@@ -91,8 +90,7 @@ impl<'a> Builder<'a> {
                         let fps = fps_counter.fps();
                         let title = format!("{} ({:.0} FPS)", title, fps.round());
 
-                        let mut engine = e.borrow_mut();
-                        let engine = engine.as_mut().unwrap();
+                        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
                         // This fails silently on error
                         engine.canvas.window_mut().set_title(&title).ok();
 
@@ -103,8 +101,7 @@ impl<'a> Builder<'a> {
                         return Ok(());
                     }
 
-                    let mut engine = e.borrow_mut();
-                    let engine = engine.as_mut().unwrap();
+                    let mut engine = e.get().expect(NOT_INIT).borrow_mut();
                     engine.update();
 
                     for event in engine.events.poll_iter() {
