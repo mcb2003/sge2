@@ -107,7 +107,7 @@ where
     })
 }
 
-pub fn draw_texture<R1, R2>(texture: &Texture<'_>, src: R1, dst: R2) -> Result<(), String>
+pub fn draw_texture<R1, R2>(texture: &Texture, src: R1, dst: R2) -> Result<(), String>
 where
     R1: Into<Option<Rect>>,
     R2: Into<Option<Rect>>,
@@ -120,7 +120,7 @@ where
 }
 
 pub fn draw_texture_ex<R1, R2, P>(
-    texture: &Texture<'_>,
+    texture: &Texture,
     src: R1,
     dst: R2,
     angle: f64,
