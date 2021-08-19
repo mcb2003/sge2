@@ -4,7 +4,7 @@ use sdl2::render::Texture as SdlTexture;
 
 use crate::{Color, Point, Rect, ENGINE, NOT_INIT};
 
-pub struct Texture(SdlTexture);
+pub struct Texture(Option<SdlTexture>);
 
 impl Texture {
     #[cfg(feature = "image")]
@@ -16,7 +16,7 @@ impl Texture {
             engine
                 .texture_creator
                 .load_texture(file_path)
-                .map(|t| Self(t))
+                .map(|t| Self(Some(t)))
         })
     }
 
@@ -29,7 +29,7 @@ impl Texture {
             let mut engine = e.get().expect(NOT_INIT).borrow_mut();
             surface
                 .as_texture(&mut engine.texture_creator)
-                .map(|t| Self(t))
+                .map(|t| Self(Some(t)))
                 .map_err(|e| e.to_string())
         })
     }
@@ -68,20 +68,35 @@ impl Texture {
     }
 
     pub fn size(&self) -> Point {
-        let query = self.0.query();
+        let query = self.0.as_ref().unwrap().query();
         Point::new(query.width as i32, query.height as i32)
     }
 
     pub fn mod_(&self) -> Color {
-        let (r, g, b) = self.0.color_mod();
-        let a = self.0.alpha_mod();
+        let texture = self.0.as_ref().unwrap();
+        let (r, g, b) = texture.color_mod();
+        let a = texture.alpha_mod();
         Color::RGBA(r, g, b, a)
     }
 
     pub fn set_mod<C: Into<Color>>(&mut self, mod_: C) {
         let (r, g, b, a) = mod_.into().rgba();
-        self.0.set_color_mod(r, g, b);
-        self.0.set_alpha_mod(a);
+        let texture = self.0.as_mut().unwrap();
+        texture.set_color_mod(r, g, b);
+        texture.set_alpha_mod(a);
+    }
+}
+
+impl Drop for Texture {
+    fn drop(&mut self) {
+        ENGINE.with(|e| {
+            if e.get().is_some() {
+                // Safety: TextureCreator definitely exists and is the same object, so this is safe.
+                unsafe {
+                    self.0.take().unwrap().destroy();
+                }
+            }
+        })
     }
 }
 
@@ -90,9 +105,11 @@ where
     R1: Into<Option<Rect>>,
     R2: Into<Option<Rect>>,
 {
+    let texture = texture.0.as_ref().unwrap();
+
     ENGINE.with(|e| {
         let mut engine = e.get().expect(NOT_INIT).borrow_mut();
-        engine.canvas.copy(&texture.0, src, dst)
+        engine.canvas.copy(texture, src, dst)
     })
 }
 
@@ -110,10 +127,12 @@ where
     R2: Into<Option<Rect>>,
     P: Into<Option<Point>>,
 {
+    let texture = texture.0.as_ref().unwrap();
+
     ENGINE.with(|e| {
         let mut engine = e.get().expect(NOT_INIT).borrow_mut();
         engine.canvas.copy_ex(
-            &texture.0,
+            texture,
             src,
             dst,
             angle,
