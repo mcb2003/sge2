@@ -1,4 +1,4 @@
-use std::{error::Error, cell::RefCell};
+use std::{cell::RefCell, error::Error};
 
 use sdl2::event::Event;
 

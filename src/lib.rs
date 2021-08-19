@@ -1,6 +1,4 @@
 mod builder;
-mod texture;
-pub use texture::*;
 pub use builder::Builder;
 mod draw;
 pub use draw::*;
@@ -15,13 +13,14 @@ mod gfx;
 pub use gfx::*;
 pub mod input;
 pub use input::functions::*;
+mod texture;
+pub use texture::*;
 
 use std::cell::RefCell;
 
 pub use sdl2::{
     pixels::Color,
     rect::{Point, Rect},
-    render::{Texture, TextureValueError},
 };
 
 use once_cell::unsync::OnceCell;

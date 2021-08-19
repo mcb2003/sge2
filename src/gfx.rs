@@ -193,7 +193,9 @@ where
         let (bx, by) = to_xy(b, TRIANGLE_X_BOUNDS, TRIANGLE_Y_BOUNDS);
         let (cx, cy) = to_xy(c, TRIANGLE_X_BOUNDS, TRIANGLE_Y_BOUNDS);
 
-        engine.canvas.filled_trigon(ax, ay, bx, by, cx, cy, color.into())
+        engine
+            .canvas
+            .filled_trigon(ax, ay, bx, by, cx, cy, color.into())
     })
 }
 

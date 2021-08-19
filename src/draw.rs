@@ -1,4 +1,4 @@
-use sdl2::render::{BlendMode, Texture};
+use sdl2::render::BlendMode;
 
 use crate::{Color, Point, Rect, ENGINE, NOT_INIT};
 
@@ -95,45 +95,6 @@ where
         let mut engine = e.get().expect(NOT_INIT).borrow_mut();
         engine.canvas.set_draw_color(color);
         engine.canvas.draw_rects(rects.into())
-    })
-}
-
-pub fn draw_texture<R1, R2>(texture: &Texture, src: R1, dst: R2) -> Result<(), String>
-where
-    R1: Into<Option<Rect>>,
-    R2: Into<Option<Rect>>,
-{
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
-        engine.canvas.copy(texture, src, dst)
-    })
-}
-
-pub fn draw_texture_ex<R1, R2, P>(
-    texture: &Texture,
-    src: R1,
-    dst: R2,
-    angle: f64,
-    center: P,
-    flip_horizontal: bool,
-    flip_vertical: bool,
-) -> Result<(), String>
-where
-    R1: Into<Option<Rect>>,
-    R2: Into<Option<Rect>>,
-    P: Into<Option<Point>>,
-{
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
-        engine.canvas.copy_ex(
-            texture,
-            src,
-            dst,
-            angle,
-            center,
-            flip_horizontal,
-            flip_vertical,
-        )
     })
 }
 
