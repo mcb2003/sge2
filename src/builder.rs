@@ -12,6 +12,7 @@ pub struct Builder<'a> {
     present_vsync: bool,
     show_fps: bool,
     fullscreen: Fullscreen,
+    scale: (f32, f32),
     #[cfg(feature = "gfx")]
     anti_alias: bool,
 }
@@ -25,6 +26,7 @@ impl<'a> Builder<'a> {
             present_vsync: true,
             show_fps: true,
             fullscreen: Fullscreen::Off,
+            scale: (1.0, 1.0),
             #[cfg(feature = "gfx")]
             anti_alias: false,
         }
@@ -45,6 +47,12 @@ impl<'a> Builder<'a> {
         self
     }
 
+    pub fn scale(mut self, scale_x: f32, scale_y: f32) -> Self {
+        self.scale.0 = scale_x;
+        self.scale.1 = scale_y;
+        self
+    }
+
     #[cfg(feature = "gfx")]
     pub fn anti_alias(mut self, val: bool) -> Self {
         self.anti_alias = val;
@@ -60,6 +68,7 @@ impl<'a> Builder<'a> {
             present_vsync,
             show_fps,
             fullscreen,
+            scale,
             #[cfg(feature = "gfx")]
             anti_alias,
         } = self;
@@ -75,6 +84,7 @@ impl<'a> Builder<'a> {
                     height,
                     present_vsync,
                     fullscreen,
+                    scale,
                     #[cfg(feature = "gfx")]
                     anti_alias,
                 )?;

@@ -22,6 +22,7 @@ impl Engine {
         height: u32,
         present_vsync: bool,
         fullscreen: Fullscreen,
+        scale: (f32, f32),
         #[cfg(feature = "gfx")] anti_alias: bool,
     ) -> Result<Self, String> {
         let sdl = sdl2::init()?;
@@ -49,7 +50,8 @@ impl Engine {
             canvas = canvas.present_vsync();
         }
 
-        let canvas = canvas.build().map_err(|e| e.to_string())?;
+        let mut canvas = canvas.build().map_err(|e| e.to_string())?;
+        canvas.set_scale(scale.0, scale.1)?;
         let texture_creator = canvas.texture_creator();
 
         let events = sdl.event_pump()?;

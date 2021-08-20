@@ -9,10 +9,11 @@ license = "MIT"
 edition = "2018"
 
 [features]
-default = ["gfx"]
+default = ["gfx", "image"]
 bundled_sdl = ["sdl2/bundled"]
 static_sdl = ["sdl2/static-link"]
 gfx = ["sdl2/gfx"]
+image = ["sdl2/image"]
 
 [dependencies]
 fnv = "1.0.7"

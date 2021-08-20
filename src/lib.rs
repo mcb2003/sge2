@@ -56,6 +56,6 @@ where
 pub mod prelude {
     pub use crate::{
         input::{MouseButton, Scancode},
-        Color, Point, Rect, Texture
+        Color, Point, Rect, Texture,
     };
 }
