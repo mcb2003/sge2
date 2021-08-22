@@ -1,32 +1,45 @@
 use std::path::Path;
 
-use sdl2::surface::Surface as SdlSurface;
+use sdl2::{pixels::PixelFormatEnum, surface::Surface as SdlSurface};
 
 use crate::{Color, Texture, ENGINE, NOT_INIT};
 
-pub struct Surface<'a>(pub(crate) SdlSurface<'a>);
-
-impl Surface<'_> {
-    pub fn new(width: u32, height: u32) -> Result<Self, String> {
-        let format = ENGINE.with(|e| {
+/// A helper to get the window's default pixel format.
+fn default_pixel_format() -> PixelFormatEnum {
+        ENGINE.with(|e| {
             e.get()
                 .expect(NOT_INIT)
                 .borrow()
                 .canvas
                 .default_pixel_format()
-        });
+        })
+}
+
+pub struct Surface<'a>(pub(crate) SdlSurface<'a>);
+
+impl Surface<'_> {
+    pub fn new(width: u32, height: u32) -> Result<Self, String> {
+        let format = default_pixel_format();
         SdlSurface::new(width, height, format).map(|s| Self(s))
     }
 
     #[cfg(feature = "image")]
     pub fn from_file<P: AsRef<Path>>(file_path: P) -> Result<Self, String> {
         use sdl2::image::LoadSurface;
-        SdlSurface::from_file(file_path).map(|s| Self(s))
+        let mut surf = SdlSurface::from_file(file_path)?;
+        if let Ok(new_surf) = surf.convert_format(default_pixel_format()) {
+            surf = new_surf;
+        }
+        Ok(Self(surf))
     }
 
     #[cfg(not(feature = "image"))]
     pub fn from_file<P: AsRef<Path>>(file_path: P) -> Result<Self, String> {
-        SdlSurface::load_bmp(file_path).map(|s| Self(s))
+        let mut surf = SdlSurface::load_bmp(file_path)?;
+        if let Ok(new_surf) = surf.convert_format(default_pixel_format()) {
+            surf = new_surf;
+        }
+        Ok(Self(surf))
     }
 
     pub fn size(&self) -> (u32, u32) {
