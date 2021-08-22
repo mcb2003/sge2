@@ -23,6 +23,7 @@ use std::cell::RefCell;
 pub use sdl2::{
     pixels::Color,
     rect::{Point, Rect},
+    render::TextureValueError,
 };
 
 use once_cell::unsync::OnceCell;

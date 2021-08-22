@@ -2,7 +2,7 @@ use std::path::Path;
 
 use sdl2::{pixels::PixelFormatEnum, surface::Surface as SdlSurface};
 
-use crate::{Color, Texture, ENGINE, NOT_INIT};
+use crate::{Color, Texture, ENGINE, NOT_INIT, TextureValueError};
 
 /// A helper to get the window's default pixel format.
 fn default_pixel_format() -> PixelFormatEnum {
@@ -59,7 +59,7 @@ impl Surface<'_> {
         self.0.set_alpha_mod(a);
     }
 
-    pub fn as_texture(&self) -> Result<Texture, String> {
+    pub fn as_texture(&self) -> Result<Texture, TextureValueError> {
         Texture::from_surface(self)
     }
 }

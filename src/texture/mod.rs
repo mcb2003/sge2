@@ -2,19 +2,21 @@ use std::path::Path;
 
 use sdl2::render::Texture as SdlTexture;
 
-use crate::{Color, Point, Rect, Surface, ENGINE, NOT_INIT};
+use crate::{Color, Point, Rect, Surface, ENGINE, NOT_INIT, TextureValueError};
+
+mod error;
+use error::LoadTextureError;
 
 pub struct Texture(Option<SdlTexture>);
 
 impl Texture {
-    pub fn from_surface(surface: &Surface) -> Result<Self, String> {
+    pub fn from_surface(surface: &Surface) -> Result<Self, TextureValueError> {
         ENGINE.with(|e| {
             let mut engine = e.get().expect(NOT_INIT).borrow_mut();
             surface
                 .0
                 .as_texture(&mut engine.texture_creator)
                 .map(|t| Self(Some(t)))
-                .map_err(|e| e.to_string())
         })
     }
 
@@ -28,21 +30,21 @@ impl Texture {
                 .texture_creator
                 .load_texture(file_path)
                 .map(|t| Self(Some(t)))
-                .map_err(|e| e.to_string())
         })
     }
 
     #[cfg(not(feature = "image"))]
-    pub fn from_file<P: AsRef<Path>>(file_path: P) -> Result<Self, String> {
+    pub fn from_file<P: AsRef<Path>>(file_path: P) -> Result<Self, LoadTextureError> {
         use sdl2::surface::Surface;
-        let surface = Surface::load_bmp(file_path)?;
+        use LoadTextureError as E;
+        let surface = Surface::load_bmp(file_path).map_err(|e| E::LoadError(e))?;
 
         ENGINE.with(move |e| {
             let mut engine = e.get().expect(NOT_INIT).borrow_mut();
             surface
                 .as_texture(&mut engine.texture_creator)
                 .map(|t| Self(Some(t)))
-                .map_err(|e| e.to_string())
+                .map_err(|e| E::ValueError(e))
         })
     }
 

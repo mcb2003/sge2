@@ -3,6 +3,9 @@ use crate::{
     Fullscreen,
 };
 
+mod error;
+pub use error::EngineBuildError;
+
 pub(crate) struct Engine {
     pub sdl: sdl2::Sdl,
     #[allow(dead_code)]
@@ -24,7 +27,9 @@ impl Engine {
         fullscreen: Fullscreen,
         scale: (f32, f32),
         #[cfg(feature = "gfx")] anti_alias: bool,
-    ) -> Result<Self, String> {
+    ) -> Result<Self, EngineBuildError> {
+        use EngineBuildError as E;
+
         let sdl = sdl2::init()?;
         let video = sdl.video()?;
         let mut canvas = video.window(title, width, height);
@@ -42,7 +47,7 @@ impl Engine {
         let mut canvas = canvas
             .position_centered()
             .build()
-            .map_err(|e| e.to_string())?
+            .map_err(|e| E::WindowBuildError(e))?
             .into_canvas()
             .accelerated();
 
@@ -50,7 +55,7 @@ impl Engine {
             canvas = canvas.present_vsync();
         }
 
-        let mut canvas = canvas.build().map_err(|e| e.to_string())?;
+        let mut canvas = canvas.build().map_err(|e| E::CanvasBuildError(e))?;
         canvas.set_scale(scale.0, scale.1)?;
         let texture_creator = canvas.texture_creator();
 
