@@ -4,7 +4,9 @@ use sdl2::render::Texture as SdlTexture;
 
 use crate::{Color, Point, Rect, Surface, ENGINE, NOT_INIT, TextureValueError};
 
+#[cfg(not(feature = "image"))]
 mod error;
+#[cfg(not(feature = "image"))]
 use error::LoadTextureError;
 
 pub struct Texture(Option<SdlTexture>);
@@ -124,7 +126,7 @@ impl Drop for Texture {
     }
 }
 
-pub fn draw<R1, R2>(texture: &Texture, src: R1, dst: R2) -> Result<(), String>
+pub fn draw_texture<R1, R2>(texture: &Texture, src: R1, dst: R2) -> Result<(), String>
 where
     R1: Into<Option<Rect>>,
     R2: Into<Option<Rect>>,
@@ -132,7 +134,7 @@ where
     texture.draw(src, dst)
 }
 
-pub fn draw_ex<R1, R2, P>(
+pub fn draw_texture_ex<R1, R2, P>(
     texture: &Texture,
     src: R1,
     dst: R2,
