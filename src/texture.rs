@@ -39,7 +39,12 @@ impl Texture {
         R1: Into<Option<Rect>>,
         R2: Into<Option<Rect>>,
     {
-        draw_texture(self, src, dst)
+        let texture = self.0.as_ref().unwrap();
+
+        ENGINE.with(|e| {
+            let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+            engine.canvas.copy(texture, src, dst)
+        })
     }
 
     pub fn draw_ex<R1, R2, P>(
@@ -56,15 +61,20 @@ impl Texture {
         R2: Into<Option<Rect>>,
         P: Into<Option<Point>>,
     {
-        draw_texture_ex(
-            self,
-            src,
-            dst,
-            angle,
-            center,
-            flip_horizontal,
-            flip_vertical,
-        )
+        let texture = self.0.as_ref().unwrap();
+
+        ENGINE.with(|e| {
+            let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+            engine.canvas.copy_ex(
+                texture,
+                src,
+                dst,
+                angle,
+                center,
+                flip_horizontal,
+                flip_vertical,
+            )
+        })
     }
 
     pub fn size(&self) -> Point {
@@ -100,20 +110,15 @@ impl Drop for Texture {
     }
 }
 
-pub fn draw_texture<R1, R2>(texture: &Texture, src: R1, dst: R2) -> Result<(), String>
+pub fn draw<R1, R2>(texture: &Texture, src: R1, dst: R2) -> Result<(), String>
 where
     R1: Into<Option<Rect>>,
     R2: Into<Option<Rect>>,
 {
-    let texture = texture.0.as_ref().unwrap();
-
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
-        engine.canvas.copy(texture, src, dst)
-    })
+    texture.draw(src, dst)
 }
 
-pub fn draw_texture_ex<R1, R2, P>(
+pub fn draw_ex<R1, R2, P>(
     texture: &Texture,
     src: R1,
     dst: R2,
@@ -127,18 +132,5 @@ where
     R2: Into<Option<Rect>>,
     P: Into<Option<Point>>,
 {
-    let texture = texture.0.as_ref().unwrap();
-
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
-        engine.canvas.copy_ex(
-            texture,
-            src,
-            dst,
-            angle,
-            center,
-            flip_horizontal,
-            flip_vertical,
-        )
-    })
+    texture.draw_ex(src, dst, angle, center, flip_horizontal, flip_vertical)
 }
