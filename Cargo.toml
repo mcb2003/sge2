@@ -7,6 +7,7 @@ keywords = ["gamedev", "graphics", "sdl", "wrapper", "sge"]
 categories = ["game-development", "game-engines", "multimedia", "rendering::engine"]
 license = "MIT"
 edition = "2018"
+exclude = ["sge.png"]
 
 [features]
 default = ["gfx", "image"]
