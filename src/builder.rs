@@ -77,19 +77,19 @@ impl<'a> Builder<'a> {
             if app.on_create()? {
                 loop {
                     let elapsed_time = fps_counter.update(show_fps);
-                    if show_fps && fps_counter.time_acc() >= 1.0 {
-                        let fps = fps_counter.fps();
-                        let title = format!("{} ({:.0} FPS)", title, fps.round());
-
-                        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
-                        // This fails silently on error
-                        engine.canvas.window_mut().set_title(&title).ok();
-
-                        fps_counter.reset_average();
-                    }
-
                     {
                         let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+
+                        if show_fps && fps_counter.time_acc() >= 1.0 {
+                            let fps = fps_counter.fps();
+                            let title = format!("{} ({:.0} FPS)", title, fps.round());
+
+                            // This fails silently on error
+                            engine.canvas.window_mut().set_title(&title).ok();
+
+                            fps_counter.reset_average();
+                        }
+
                         engine.update();
 
                         for event in engine.events.poll_iter() {
