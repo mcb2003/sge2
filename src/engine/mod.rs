@@ -1,7 +1,6 @@
 use crate::{
-    Builder,
     input::{InputState, KeyboardState, MouseState},
-    Fullscreen,
+    Builder, Fullscreen,
 };
 
 mod error;
@@ -20,9 +19,7 @@ pub(crate) struct Engine {
 }
 
 impl Engine {
-    pub fn new(
-        builder: Builder,
-    ) -> Result<Self, EngineBuildError> {
+    pub fn new(builder: Builder) -> Result<Self, EngineBuildError> {
         use EngineBuildError as E;
 
         let sdl = sdl2::init()?;

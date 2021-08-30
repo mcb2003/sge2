@@ -76,7 +76,8 @@ impl<'a> Builder<'a> {
             }
             if app.on_create()? {
                 loop {
-                    let elapsed_time = fps_counter.update(show_fps); if show_fps && fps_counter.time_acc() >= 1.0 {
+                    let elapsed_time = fps_counter.update(show_fps);
+                    if show_fps && fps_counter.time_acc() >= 1.0 {
                         let fps = fps_counter.fps();
                         let title = format!("{} ({:.0} FPS)", title, fps.round());
 
@@ -87,20 +88,22 @@ impl<'a> Builder<'a> {
                         fps_counter.reset_average();
                     }
 
-                    if !app.on_update(elapsed_time)? {
-                        return Ok(());
-                    }
+                    {
+                        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+                        engine.update();
 
-                    let mut engine = e.get().expect(NOT_INIT).borrow_mut();
-                    engine.update();
-
-                    for event in engine.events.poll_iter() {
-                        // The app didn't handle the event
-                    if !app.on_event(&event)? {
-                    if let Event::Quit { .. } = event {
-                            return Ok(());
+                        for event in engine.events.poll_iter() {
+                            // The app didn't handle the event
+                            if !app.on_event(&event)? {
+                                if let Event::Quit { .. } = event {
+                                    return Ok(());
+                                }
+                            }
                         }
                     }
+
+                    if !app.on_update(elapsed_time)? {
+                        return Ok(());
                     }
                 }
             }

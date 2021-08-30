@@ -1,6 +1,6 @@
 use std::{error::Error, fmt};
 
-use sdl2::{IntegerOrSdlError, video::WindowBuildError};
+use sdl2::{video::WindowBuildError, IntegerOrSdlError};
 
 #[derive(Debug)]
 pub enum EngineBuildError {
@@ -20,7 +20,7 @@ impl fmt::Display for EngineBuildError {
         match self {
             Self::CanvasBuildError(e) => write!(f, "Error constructing canvas: {}", e),
             Self::WindowBuildError(e) => write!(f, "Error constructing window: {}", e),
-Self::SdlError(s) => write!(f, "SDL error: {}", s),
+            Self::SdlError(s) => write!(f, "SDL error: {}", s),
         }
     }
 }

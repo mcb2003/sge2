@@ -2,7 +2,7 @@ use std::path::Path;
 
 use sdl2::render::Texture as SdlTexture;
 
-use crate::{Color, Point, Rect, Surface, ENGINE, NOT_INIT, TextureValueError};
+use crate::{Color, Point, Rect, Surface, TextureValueError, ENGINE, NOT_INIT};
 
 #[cfg(not(feature = "image"))]
 mod error;

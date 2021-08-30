@@ -2,17 +2,17 @@ use std::path::Path;
 
 use sdl2::{pixels::PixelFormatEnum, surface::Surface as SdlSurface};
 
-use crate::{Color, Texture, ENGINE, NOT_INIT, TextureValueError};
+use crate::{Color, Texture, TextureValueError, ENGINE, NOT_INIT};
 
 /// A helper to get the window's default pixel format.
 fn default_pixel_format() -> PixelFormatEnum {
-        ENGINE.with(|e| {
-            e.get()
-                .expect(NOT_INIT)
-                .borrow()
-                .canvas
-                .default_pixel_format()
-        })
+    ENGINE.with(|e| {
+        e.get()
+            .expect(NOT_INIT)
+            .borrow()
+            .canvas
+            .default_pixel_format()
+    })
 }
 
 pub struct Surface<'a>(pub(crate) SdlSurface<'a>);
