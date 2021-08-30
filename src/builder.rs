@@ -6,15 +6,15 @@ use crate::{Application, Engine, Fullscreen, ENGINE, NOT_INIT};
 
 #[must_use = "Builders do nothing unless an Application is started with them"]
 pub struct Builder<'a> {
-    title: &'a str,
-    width: u32,
-    height: u32,
-    present_vsync: bool,
-    show_fps: bool,
-    fullscreen: Fullscreen,
-    scale: (f32, f32),
+    pub(crate) title: &'a str,
+    pub(crate) width: u32,
+    pub(crate) height: u32,
+    pub(crate) present_vsync: bool,
+    pub(crate) show_fps: bool,
+    pub(crate) fullscreen: Fullscreen,
+    pub(crate) scale: (f32, f32),
     #[cfg(feature = "gfx")]
-    anti_alias: bool,
+    pub(crate) anti_alias: bool,
 }
 
 impl<'a> Builder<'a> {
@@ -60,34 +60,15 @@ impl<'a> Builder<'a> {
     }
 
     pub fn start<A: Application>(self, app: &mut A) -> Result<(), Box<dyn Error>> {
-        // Destructure `self`
-        let Self {
-            title,
-            width,
-            height,
-            present_vsync,
-            show_fps,
-            fullscreen,
-            scale,
-            #[cfg(feature = "gfx")]
-            anti_alias,
-        } = self;
+        let title = self.title;
+        let show_fps = self.show_fps;
 
         ENGINE.with(|e| {
             use crate::fps::FpsCounter;
 
             let mut fps_counter: FpsCounter;
             {
-                let new = Engine::new(
-                    title,
-                    width,
-                    height,
-                    present_vsync,
-                    fullscreen,
-                    scale,
-                    #[cfg(feature = "gfx")]
-                    anti_alias,
-                )?;
+                let new = Engine::new(self)?;
                 fps_counter = FpsCounter::new(new.sdl.timer()?);
                 if let Err(_) = e.set(RefCell::new(new)) {
                     panic!("An engine was already started in this thread");
@@ -95,8 +76,7 @@ impl<'a> Builder<'a> {
             }
             if app.on_create()? {
                 loop {
-                    let elapsed_time = fps_counter.update(show_fps);
-                    if show_fps && fps_counter.time_acc() >= 1.0 {
+                    let elapsed_time = fps_counter.update(show_fps); if show_fps && fps_counter.time_acc() >= 1.0 {
                         let fps = fps_counter.fps();
                         let title = format!("{} ({:.0} FPS)", title, fps.round());
 

@@ -1,4 +1,5 @@
 use crate::{
+    Builder,
     input::{InputState, KeyboardState, MouseState},
     Fullscreen,
 };
@@ -20,21 +21,15 @@ pub(crate) struct Engine {
 
 impl Engine {
     pub fn new(
-        title: &str,
-        width: u32,
-        height: u32,
-        present_vsync: bool,
-        fullscreen: Fullscreen,
-        scale: (f32, f32),
-        #[cfg(feature = "gfx")] anti_alias: bool,
+        builder: Builder,
     ) -> Result<Self, EngineBuildError> {
         use EngineBuildError as E;
 
         let sdl = sdl2::init()?;
         let video = sdl.video()?;
-        let mut canvas = video.window(title, width, height);
+        let mut canvas = video.window(builder.title, builder.width, builder.height);
 
-        match fullscreen {
+        match builder.fullscreen {
             Fullscreen::Off => {} // Do nothing
             Fullscreen::On => {
                 canvas.fullscreen();
@@ -51,12 +46,12 @@ impl Engine {
             .into_canvas()
             .accelerated();
 
-        if present_vsync {
+        if builder.present_vsync {
             canvas = canvas.present_vsync();
         }
 
         let mut canvas = canvas.build().map_err(|e| E::CanvasBuildError(e))?;
-        canvas.set_scale(scale.0, scale.1)?;
+        canvas.set_scale(builder.scale.0, builder.scale.1)?;
         let texture_creator = canvas.texture_creator();
 
         let events = sdl.event_pump()?;
@@ -73,7 +68,7 @@ impl Engine {
             events,
             input,
             #[cfg(feature = "gfx")]
-            anti_alias,
+            anti_alias: builder.anti_alias,
         })
     }
 
