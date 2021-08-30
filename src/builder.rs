@@ -115,9 +115,12 @@ impl<'a> Builder<'a> {
                     engine.update();
 
                     for event in engine.events.poll_iter() {
-                        if let Event::Quit { .. } = event {
+                        // The app didn't handle the event
+                    if !app.on_event(&event)? {
+                    if let Event::Quit { .. } = event {
                             return Ok(());
                         }
+                    }
                     }
                 }
             }

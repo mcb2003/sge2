@@ -21,6 +21,7 @@ pub use texture::*;
 use std::cell::RefCell;
 
 pub use sdl2::{
+    event::{Event, EventType},
     pixels::Color,
     rect::{Point, Rect},
     render::TextureValueError,
@@ -44,6 +45,10 @@ pub trait Application {
 
     fn on_update(&mut self, _elapsed_time: f64) -> ApplicationResult {
         Ok(true)
+    }
+
+    fn on_event(&mut self, _event: &Event) -> ApplicationResult {
+        Ok(false)
     }
 }
 
