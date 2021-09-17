@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use sge::prelude::*;
+use sge::{prelude::*, Event};
 
 const SCREEN_WIDTH: u32 = 480;
 const SCREEN_HEIGHT: u32 = 360;
@@ -31,12 +31,10 @@ impl sge::Application for App {
         Ok(true)
     }
 
-    fn on_event(&mut self, event: &sge::Event) -> sge::ApplicationResult {
-        use sge::Event;
-
+    fn on_event(&mut self, event: &Event) -> sge::ApplicationResult {
         match event {
-            Event::TextInput { text, .. } => {
-                self.text.push_str(&text);
+            Event::TextInput { ref text, .. } => {
+                self.text.push_str(text);
                 Ok(true) // We handled this event
             },
             _ => Ok(false), // Unhandled event
@@ -46,5 +44,5 @@ impl sge::Application for App {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut app = App::new();
-    sge::Builder::new("Moving Rectangle", SCREEN_WIDTH, SCREEN_HEIGHT).start(&mut app)
+    sge::Builder::new("Text Input", SCREEN_WIDTH, SCREEN_HEIGHT).start(&mut app)
 }
