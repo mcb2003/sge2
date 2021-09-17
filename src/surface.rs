@@ -20,7 +20,7 @@ pub struct Surface<'a>(pub(crate) SdlSurface<'a>);
 impl Surface<'_> {
     pub fn new(width: u32, height: u32) -> Result<Self, String> {
         let format = default_pixel_format();
-        SdlSurface::new(width, height, format).map(|s| Self(s))
+        SdlSurface::new(width, height, format).map(Self)
     }
 
     #[cfg(feature = "image")]

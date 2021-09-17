@@ -39,7 +39,7 @@ impl Engine {
         let mut canvas = canvas
             .position_centered()
             .build()
-            .map_err(|e| E::WindowBuildError(e))?
+            .map_err(E::Window)?
             .into_canvas()
             .accelerated();
 
@@ -47,7 +47,7 @@ impl Engine {
             canvas = canvas.present_vsync();
         }
 
-        let mut canvas = canvas.build().map_err(|e| E::CanvasBuildError(e))?;
+        let mut canvas = canvas.build().map_err(E::Canvas)?;
         canvas.set_scale(builder.scale.0, builder.scale.1)?;
         let texture_creator = canvas.texture_creator();
 

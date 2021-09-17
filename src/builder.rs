@@ -70,7 +70,7 @@ impl<'a> Builder<'a> {
             {
                 let new = Engine::new(self)?;
                 fps_counter = FpsCounter::new(new.sdl.timer()?);
-                if let Err(_) = e.set(RefCell::new(new)) {
+                if e.set(RefCell::new(new)).is_err() {
                     panic!("An engine was already started in this thread");
                 }
             }

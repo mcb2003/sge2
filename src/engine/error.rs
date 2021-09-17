@@ -4,23 +4,23 @@ use sdl2::{video::WindowBuildError, IntegerOrSdlError};
 
 #[derive(Debug)]
 pub enum EngineBuildError {
-    CanvasBuildError(IntegerOrSdlError),
-    WindowBuildError(WindowBuildError),
-    SdlError(String),
+    Canvas(IntegerOrSdlError),
+    Window(WindowBuildError),
+    Sdl(String),
 }
 
 impl From<String> for EngineBuildError {
     fn from(e: String) -> Self {
-        Self::SdlError(e)
+        Self::Sdl(e)
     }
 }
 
 impl fmt::Display for EngineBuildError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::CanvasBuildError(e) => write!(f, "Error constructing canvas: {}", e),
-            Self::WindowBuildError(e) => write!(f, "Error constructing window: {}", e),
-            Self::SdlError(s) => write!(f, "SDL error: {}", s),
+            Self::Canvas(e) => write!(f, "Error constructing canvas: {}", e),
+            Self::Window(e) => write!(f, "Error constructing window: {}", e),
+            Self::Sdl(s) => write!(f, "SDL error: {}", s),
         }
     }
 }
@@ -28,9 +28,9 @@ impl fmt::Display for EngineBuildError {
 impl Error for EngineBuildError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
-            Self::CanvasBuildError(e) => Some(e),
-            Self::WindowBuildError(e) => Some(e),
-            Self::SdlError(_) => None,
+            Self::Canvas(e) => Some(e),
+            Self::Window(e) => Some(e),
+            Self::Sdl(_) => None,
         }
     }
 }

@@ -14,10 +14,10 @@ pub struct Texture(Option<SdlTexture>);
 impl Texture {
     pub fn from_surface(surface: &Surface) -> Result<Self, TextureValueError> {
         ENGINE.with(|e| {
-            let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+            let engine = e.get().expect(NOT_INIT).borrow();
             surface
                 .0
-                .as_texture(&mut engine.texture_creator)
+                .as_texture(&engine.texture_creator)
                 .map(|t| Self(Some(t)))
         })
     }
