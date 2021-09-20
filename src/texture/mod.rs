@@ -9,9 +9,11 @@ mod error;
 #[cfg(not(feature = "image"))]
 use error::LoadTextureError;
 
+/// A (potentially hardware accelerated) renderable texture.
 pub struct Texture(Option<SdlTexture>);
 
 impl Texture {
+    /// Load a T`exture` from an existing [`Surface`][crate::Surface].
     pub fn from_surface(surface: &Surface) -> Result<Self, TextureValueError> {
         ENGINE.with(|e| {
             let engine = e.get().expect(NOT_INIT).borrow();
@@ -22,6 +24,7 @@ impl Texture {
         })
     }
 
+    /// Load a `Texture` from an image file.
     #[cfg(feature = "image")]
     pub fn from_file<P: AsRef<Path>>(file_path: P) -> Result<Self, String> {
         use sdl2::image::LoadTexture;
@@ -35,6 +38,7 @@ impl Texture {
         })
     }
 
+    /// Load a `Texture` from a BMP file.
     #[cfg(not(feature = "image"))]
     pub fn from_file<P: AsRef<Path>>(file_path: P) -> Result<Self, LoadTextureError> {
         use sdl2::surface::Surface;
@@ -50,6 +54,9 @@ impl Texture {
         })
     }
 
+    /// Draw the portion of a `Texture` given by `src` to `dst` on the canvas. If `src` is `None`,
+    /// draws the entire `Texture`. If `dst` is `None`, draws the `Texture` to fill the entire
+    /// canvas.
     pub fn draw<R1, R2>(&self, src: R1, dst: R2) -> Result<(), String>
     where
         R1: Into<Option<Rect>>,
@@ -63,6 +70,10 @@ impl Texture {
         })
     }
 
+    /// Draw the portion of a `Texture` given by `src` to `dst` on the canvas, rotated around
+    /// `center` by `angle`, and optionally flipped horizontally or vertically. If `src` is `None`,
+    /// draws the entire `Texture`. If `dst` is `None`, draws the `Texture` to fill the entire
+    /// canvas.
     pub fn draw_ex<R1, R2, P>(
         &self,
         src: R1,
@@ -93,11 +104,13 @@ impl Texture {
         })
     }
 
+    /// Returns the size of the `Texture` in pixels.
     pub fn size(&self) -> Point {
         let query = self.0.as_ref().unwrap().query();
         Point::new(query.width as i32, query.height as i32)
     }
 
+    /// Returns a [`Color`][crate::Color] representing the color and alpha mod of the `Texture`.
     pub fn mod_(&self) -> Color {
         let texture = self.0.as_ref().unwrap();
         let (r, g, b) = texture.color_mod();
@@ -105,6 +118,7 @@ impl Texture {
         Color::RGBA(r, g, b, a)
     }
 
+    /// Sets the color and alpha mod of the `Texture`.
     pub fn set_mod<C: Into<Color>>(&mut self, mod_: C) {
         let (r, g, b, a) = mod_.into().rgba();
         let texture = self.0.as_mut().unwrap();
@@ -126,6 +140,9 @@ impl Drop for Texture {
     }
 }
 
+    /// Draw the portion of a `Texture` given by `src` to `dst` on the canvas. If `src` is `None`,
+    /// draws the entire `Texture`. If `dst` is `None`, draws the `Texture` to fill the entire
+    /// canvas.
 pub fn draw_texture<R1, R2>(texture: &Texture, src: R1, dst: R2) -> Result<(), String>
 where
     R1: Into<Option<Rect>>,
@@ -134,6 +151,10 @@ where
     texture.draw(src, dst)
 }
 
+    /// Draw the portion of a `Texture` given by `src` to `dst` on the canvas, rotated around
+    /// `center` by `angle`, and optionally flipped horizontally or vertically. If `src` is `None`,
+    /// draws the entire `Texture`. If `dst` is `None`, draws the `Texture` to fill the entire
+    /// canvas.
 pub fn draw_texture_ex<R1, R2, P>(
     texture: &Texture,
     src: R1,

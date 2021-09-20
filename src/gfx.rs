@@ -8,10 +8,10 @@ const CHAR_X_BOUNDS: &str = "Character x coordinate out of bounds, must fit in a
 const CHAR_Y_BOUNDS: &str = "Character y coordinate out of bounds, must fit in an i16";
 const CIRCLE_X_BOUNDS: &str = "Circle x coordinate out of bounds, must fit in an i16";
 const CIRCLE_Y_BOUNDS: &str = "Circle y coordinate out of bounds, must fit in an i16";
-const ELLIPSE_X_BOUNDS: &str = "Ellipse x coordinate out of bounds, must fit in an i16";
-const ELLIPSE_Y_BOUNDS: &str = "Ellipse y coordinate out of bounds, must fit in an i16";
 const ELLIPSE_RX_BOUNDS: &str = "Ellipse horizontal radius out of bounds, must fit in an i16";
 const ELLIPSE_RY_BOUNDS: &str = "Ellipse vertical radius out of bounds, must fit in an i16";
+const ELLIPSE_X_BOUNDS: &str = "Ellipse x coordinate out of bounds, must fit in an i16";
+const ELLIPSE_Y_BOUNDS: &str = "Ellipse y coordinate out of bounds, must fit in an i16";
 const LINE_X_BOUNDS: &str = "Line x coordinate out of bounds, must fit in an i16";
 const LINE_Y_BOUNDS: &str = "Line y coordinate out of bounds, must fit in an i16";
 const STRING_X_BOUNDS: &str = "String x coordinate out of bounds, must fit in an i16";
@@ -26,6 +26,7 @@ fn to_xy<P: Into<Point>>(p: P, x_bounds: &'static str, y_bounds: &'static str) -
     (x, y)
 }
 
+/// Returns whether shapes are currently being anti-aliased when drawn.
 pub fn anti_aliased() -> bool {
     ENGINE.with(|e| {
         let engine = e.get().expect(NOT_INIT).borrow();
@@ -33,6 +34,8 @@ pub fn anti_aliased() -> bool {
     })
 }
 
+/// Draw a single character at `pos` in the specified color. The built-in font (from SDL_gfx) is
+/// used.
 pub fn draw_char<P, C>(pos: P, character: char, color: C) -> Result<(), String>
 where
     P: Into<Point>,
@@ -47,6 +50,7 @@ where
     })
 }
 
+/// Draw a circle outline with the given center, radius and in the specified color.
 pub fn draw_circle<P, C>(center: P, radius: i16, color: C) -> Result<(), String>
 where
     P: Into<Point>,
@@ -67,6 +71,7 @@ where
     })
 }
 
+/// Draw an ellipse outline with the given center and radii, and in the specified color.
 pub fn draw_ellipse<P, R, C>(center: P, radii: R, color: C) -> Result<(), String>
 where
     P: Into<Point>,
@@ -89,6 +94,7 @@ where
     })
 }
 
+/// Draw a straight line between `start` and `end`, with the specified color.
 pub fn draw_line<P1, P2, C>(start: P1, end: P2, color: C) -> Result<(), String>
 where
     P1: Into<Point>,
@@ -111,6 +117,7 @@ where
     })
 }
 
+/// Draw a text string at `pos` in the specified color. The built-in font (from SDL_gfx) is used.
 pub fn draw_string<P, C>(pos: P, string: &str, color: C) -> Result<(), String>
 where
     P: Into<Point>,
@@ -125,6 +132,7 @@ where
     })
 }
 
+/// Draw a triangle outline from `a` to `b` to `c` and back to `a`, in the specified color.
 pub fn draw_triangle<P1, P2, P3, C>(a: P1, b: P2, c: P3, color: C) -> Result<(), String>
 where
     P1: Into<Point>,
@@ -149,6 +157,7 @@ where
     })
 }
 
+/// Draw a filled circle with the given center, radius and in the specified color.
 pub fn fill_circle<P, C>(center: P, radius: i16, color: C) -> Result<(), String>
 where
     P: Into<Point>,
@@ -163,6 +172,7 @@ where
     })
 }
 
+/// Draw a filled ellipse with the given center and radii, and in the specified color.
 pub fn fill_ellipse<P, R, C>(center: P, radii: R, color: C) -> Result<(), String>
 where
     P: Into<Point>,
@@ -179,6 +189,7 @@ where
     })
 }
 
+/// Draw a filled triangle from `a` to `b` to `c` and back to `a`, in the specified color.
 pub fn fill_triangle<P1, P2, P3, C>(a: P1, b: P2, c: P3, color: C) -> Result<(), String>
 where
     P1: Into<Point>,
@@ -199,6 +210,8 @@ where
     })
 }
 
+/// Sets if shapes should be anti-aliased when drawn. This smooths the edges of shapes, but is more
+/// CPU intensive.
 pub fn set_anti_alias(anti_alias: bool) {
     ENGINE.with(|e| {
         let mut engine = e.get().expect(NOT_INIT).borrow_mut();

@@ -15,14 +15,19 @@ fn default_pixel_format() -> PixelFormatEnum {
     })
 }
 
+/// A 2D array of pixels in a given format.
 pub struct Surface<'a>(pub(crate) SdlSurface<'a>);
 
 impl Surface<'_> {
+    /// Create a new surface with the given `width` and `height`, and the same pixel format as the
+    /// canvas, allowing for efficient blit operations.
     pub fn new(width: u32, height: u32) -> Result<Self, String> {
         let format = default_pixel_format();
         SdlSurface::new(width, height, format).map(Self)
     }
 
+    /// Load a `Surface` from an image file. The image data will automatically be converted to
+    /// match the canvas' pixel format if possible.
     #[cfg(feature = "image")]
     pub fn from_file<P: AsRef<Path>>(file_path: P) -> Result<Self, String> {
         use sdl2::image::LoadSurface;
@@ -33,6 +38,8 @@ impl Surface<'_> {
         Ok(Self(surf))
     }
 
+    /// Load a `Surface` from a BMP file. The image data will automatically be converted to
+    /// match the canvas' pixel format if possible.
     #[cfg(not(feature = "image"))]
     pub fn from_file<P: AsRef<Path>>(file_path: P) -> Result<Self, String> {
         let mut surf = SdlSurface::load_bmp(file_path)?;
@@ -42,16 +49,19 @@ impl Surface<'_> {
         Ok(Self(surf))
     }
 
+    /// Returns the size, in pixels, of the `Surface`.
     pub fn size(&self) -> (u32, u32) {
         self.0.size()
     }
 
+    /// Returns a [`Color`][crate::Color] representing the color and alpha mod of the `Surface`.
     pub fn mod_(&self) -> Color {
         let (r, g, b) = self.0.color_mod().rgb();
         let a = self.0.alpha_mod();
         Color::RGBA(r, g, b, a)
     }
 
+    /// Sets the color and alpha mod of the `Surface`.
     pub fn set_mod<C: Into<Color>>(&mut self, mod_: C) {
         let mod_ = mod_.into();
         let (_, _, _, a) = mod_.rgba();
@@ -59,6 +69,8 @@ impl Surface<'_> {
         self.0.set_alpha_mod(a);
     }
 
+    /// Loads this surface as a new [`Texture`][crate::Texture], which may be hardware accelerated
+    /// and thus faster to render.
     pub fn as_texture(&self) -> Result<Texture, TextureValueError> {
         Texture::from_surface(self)
     }

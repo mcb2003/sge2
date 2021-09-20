@@ -2,6 +2,7 @@ use sdl2::render::BlendMode;
 
 use crate::{Color, Point, Rect, ENGINE, NOT_INIT};
 
+/// Get the current blend mode.
 pub fn blend_mode() -> BlendMode {
     ENGINE.with(|e| {
         let engine = e.get().expect(NOT_INIT).borrow();
@@ -9,6 +10,7 @@ pub fn blend_mode() -> BlendMode {
     })
 }
 
+/// Clear the canvas to the specified color.
 pub fn clear<C: Into<Color>>(color: C) {
     ENGINE.with(|e| {
         let mut engine = e.get().expect(NOT_INIT).borrow_mut();
@@ -17,6 +19,7 @@ pub fn clear<C: Into<Color>>(color: C) {
     })
 }
 
+/// Get the clipping rectangle currently in use (if any).
 pub fn clip_rect() -> Option<Rect> {
     ENGINE.with(|e| {
         let engine = e.get().expect(NOT_INIT).borrow_mut();
@@ -24,6 +27,7 @@ pub fn clip_rect() -> Option<Rect> {
     })
 }
 
+/// Draw a straight line between `start` and `end`, with the specified color.
 #[cfg(not(feature = "gfx"))]
 pub fn draw_line<P1, P2, C>(start: P1, end: P2, color: C) -> Result<(), String>
 where
@@ -38,6 +42,7 @@ where
     })
 }
 
+// Draw a series of lines in the specified color.
 pub fn draw_lines<'a, P, C>(points: P, color: C) -> Result<(), String>
 where
     P: Into<&'a [Point]>,
@@ -50,6 +55,7 @@ where
     })
 }
 
+/// Draw a single pixel at `point` with the specified color.
 pub fn draw_point<P, C>(point: P, color: C) -> Result<(), String>
 where
     P: Into<Point>,
@@ -62,6 +68,7 @@ where
     })
 }
 
+/// Draw a series of points in the specified color.
 pub fn draw_points<'a, P, C>(points: P, color: C) -> Result<(), String>
 where
     P: Into<&'a [Point]>,
@@ -74,6 +81,7 @@ where
     })
 }
 
+/// Draw a rectangle outline denoted by `rect` in the specified color.
 pub fn draw_rect<R, C>(rect: R, color: C) -> Result<(), String>
 where
     R: Into<Rect>,
@@ -86,6 +94,7 @@ where
     })
 }
 
+/// Draw a series of rectangle outlines in the specified color.
 pub fn draw_rects<'a, R, C>(rects: R, color: C) -> Result<(), String>
 where
     R: Into<&'a [Rect]>,
@@ -98,6 +107,7 @@ where
     })
 }
 
+/// Draw a filled rectangle denoted by `rect` in the specified color.
 pub fn fill_rect<R, C>(rect: R, color: C) -> Result<(), String>
 where
     R: Into<Rect>,
@@ -110,6 +120,7 @@ where
     })
 }
 
+/// Draw a series of filled rectangles in the specified color.
 pub fn fill_rects<'a, R, C>(rects: R, color: C) -> Result<(), String>
 where
     R: Into<&'a [Rect]>,
@@ -122,6 +133,7 @@ where
     })
 }
 
+/// Set the blend mode for alpha blending.
 pub fn set_blend_mode(blend: BlendMode) {
     ENGINE.with(|e| {
         let mut engine = e.get().expect(NOT_INIT).borrow_mut();
@@ -129,6 +141,7 @@ pub fn set_blend_mode(blend: BlendMode) {
     })
 }
 
+/// Set or clear the current clipping rectangle.
 pub fn set_clip_rect<R: Into<Option<Rect>>>(rect: R) {
     ENGINE.with(|e| {
         let mut engine = e.get().expect(NOT_INIT).borrow_mut();
@@ -136,6 +149,7 @@ pub fn set_clip_rect<R: Into<Option<Rect>>>(rect: R) {
     })
 }
 
+/// Set or clear the current viewport. Any draw calls will be confined to this viewport until it is reset.
 pub fn set_viewport<R: Into<Option<Rect>>>(rect: R) {
     ENGINE.with(|e| {
         let mut engine = e.get().expect(NOT_INIT).borrow_mut();
@@ -143,6 +157,7 @@ pub fn set_viewport<R: Into<Option<Rect>>>(rect: R) {
     })
 }
 
+/// Get the current viewport (if any).
 pub fn viewport() -> Rect {
     ENGINE.with(|e| {
         let engine = e.get().expect(NOT_INIT).borrow();
