@@ -19,7 +19,7 @@ image = ["sdl2/image"]
 [dependencies]
 fnv = "1.0.7"
 once_cell = "1.8.0"
-sdl2 = { version = "0.34.5", features = ["unsafe_textures"] }
+sdl2 = { version = "0.35.2", features = ["unsafe_textures"] }
 
 [[example]]
 name = "moving_circle"
