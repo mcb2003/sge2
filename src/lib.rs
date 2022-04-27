@@ -21,6 +21,7 @@ pub use texture::*;
 use std::cell::RefCell;
 
 pub use sdl2::{
+    self,
     event::{Event, EventType},
     pixels::Color,
     rect::{Point, Rect},
