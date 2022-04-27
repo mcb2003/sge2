@@ -13,6 +13,7 @@ mod gfx;
 pub use gfx::*;
 pub mod input;
 pub use input::functions::*;
+pub mod panic;
 mod surface;
 pub use surface::*;
 mod texture;
