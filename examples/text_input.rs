@@ -11,7 +11,9 @@ struct App {
 
 impl App {
     pub fn new() -> Self {
-        Self { text: String::new() }
+        Self {
+            text: String::new(),
+        }
     }
 }
 
@@ -26,7 +28,7 @@ impl sge::Application for App {
         sge::clear(Color::BLACK);
         for (i, line) in self.text.lines().enumerate() {
             // Note: this doesn't wrap lines, they'll just be cut off
-        sge::draw_string((0, 8 * i as i32), line, Color::WHITE);
+            sge::draw_string((0, 8 * i as i32), line, Color::WHITE);
         }
         Ok(true)
     }
@@ -36,7 +38,7 @@ impl sge::Application for App {
             Event::TextInput { ref text, .. } => {
                 self.text.push_str(text);
                 Ok(true) // We handled this event
-            },
+            }
             _ => Ok(false), // Unhandled event
         }
     }

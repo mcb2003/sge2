@@ -140,9 +140,9 @@ impl Drop for Texture {
     }
 }
 
-    /// Draw the portion of a `Texture` given by `src` to `dst` on the canvas. If `src` is `None`,
-    /// draws the entire `Texture`. If `dst` is `None`, draws the `Texture` to fill the entire
-    /// canvas.
+/// Draw the portion of a `Texture` given by `src` to `dst` on the canvas. If `src` is `None`,
+/// draws the entire `Texture`. If `dst` is `None`, draws the `Texture` to fill the entire
+/// canvas.
 pub fn draw_texture<R1, R2>(texture: &Texture, src: R1, dst: R2) -> Result<(), String>
 where
     R1: Into<Option<Rect>>,
@@ -151,10 +151,10 @@ where
     texture.draw(src, dst)
 }
 
-    /// Draw the portion of a `Texture` given by `src` to `dst` on the canvas, rotated around
-    /// `center` by `angle`, and optionally flipped horizontally or vertically. If `src` is `None`,
-    /// draws the entire `Texture`. If `dst` is `None`, draws the `Texture` to fill the entire
-    /// canvas.
+/// Draw the portion of a `Texture` given by `src` to `dst` on the canvas, rotated around
+/// `center` by `angle`, and optionally flipped horizontally or vertically. If `src` is `None`,
+/// draws the entire `Texture`. If `dst` is `None`, draws the `Texture` to fill the entire
+/// canvas.
 pub fn draw_texture_ex<R1, R2, P>(
     texture: &Texture,
     src: R1,

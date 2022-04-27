@@ -110,7 +110,7 @@ impl<'a> Builder<'a> {
 
                         for event in engine.events.poll_iter() {
                             if !app.on_event(&event)? {
-                            // The app didn't handle the event
+                                // The app didn't handle the event
                                 if let Event::Quit { .. } = event {
                                     return Ok(()); // Quit
                                 }
