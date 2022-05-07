@@ -2,7 +2,7 @@ use std::convert::TryInto;
 
 use sdl2::gfx::primitives::DrawRenderer;
 
-use crate::{Color, Point, ENGINE, NOT_INIT};
+use crate::{with_engine, with_engine_mut, Color, Point};
 
 const CHAR_X_BOUNDS: &str = "Character x coordinate out of bounds, must fit in an i16";
 const CHAR_Y_BOUNDS: &str = "Character y coordinate out of bounds, must fit in an i16";
@@ -28,10 +28,7 @@ fn to_xy<P: Into<Point>>(p: P, x_bounds: &'static str, y_bounds: &'static str) -
 
 /// Returns whether shapes are currently being anti-aliased when drawn.
 pub fn anti_aliased() -> bool {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow();
-        engine.anti_alias
-    })
+    with_engine(|e| e.anti_alias)
 }
 
 /// Draw a single character at `pos` in the specified color. The built-in font (from SDL_gfx) is
@@ -41,9 +38,7 @@ where
     P: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow_mut();
-
+    with_engine_mut(|engine| {
         let (x, y) = to_xy(pos, CHAR_X_BOUNDS, CHAR_Y_BOUNDS);
 
         engine.canvas.character(x, y, character, color.into())
@@ -56,9 +51,7 @@ where
     P: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow_mut();
-
+    with_engine_mut(|engine| {
         let (x, y) = to_xy(center, CIRCLE_X_BOUNDS, CIRCLE_Y_BOUNDS);
 
         let func = if engine.anti_alias {
@@ -78,9 +71,7 @@ where
     R: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow_mut();
-
+    with_engine_mut(|engine| {
         let (x, y) = to_xy(center, ELLIPSE_X_BOUNDS, ELLIPSE_Y_BOUNDS);
         let (rx, ry) = to_xy(radii, ELLIPSE_RX_BOUNDS, ELLIPSE_RY_BOUNDS);
 
@@ -101,9 +92,7 @@ where
     P2: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow_mut();
-
+    with_engine_mut(|engine| {
         let (start_x, start_y) = to_xy(start, LINE_X_BOUNDS, LINE_Y_BOUNDS);
         let (end_x, end_y) = to_xy(end, LINE_X_BOUNDS, LINE_Y_BOUNDS);
 
@@ -123,9 +112,7 @@ where
     P: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow_mut();
-
+    with_engine_mut(|engine| {
         let (x, y) = to_xy(pos, STRING_X_BOUNDS, STRING_Y_BOUNDS);
 
         engine.canvas.string(x, y, string, color.into())
@@ -140,9 +127,7 @@ where
     P3: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow_mut();
-
+    with_engine_mut(|engine| {
         let (ax, ay) = to_xy(a, TRIANGLE_X_BOUNDS, TRIANGLE_Y_BOUNDS);
         let (bx, by) = to_xy(b, TRIANGLE_X_BOUNDS, TRIANGLE_Y_BOUNDS);
         let (cx, cy) = to_xy(c, TRIANGLE_X_BOUNDS, TRIANGLE_Y_BOUNDS);
@@ -163,9 +148,7 @@ where
     P: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow_mut();
-
+    with_engine_mut(|engine| {
         let (x, y) = to_xy(center, CIRCLE_X_BOUNDS, CIRCLE_Y_BOUNDS);
 
         engine.canvas.filled_circle(x, y, radius, color.into())
@@ -179,9 +162,7 @@ where
     R: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow_mut();
-
+    with_engine_mut(|engine| {
         let (x, y) = to_xy(center, ELLIPSE_X_BOUNDS, ELLIPSE_Y_BOUNDS);
         let (rx, ry) = to_xy(radii, ELLIPSE_RX_BOUNDS, ELLIPSE_RY_BOUNDS);
 
@@ -197,9 +178,7 @@ where
     P3: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow_mut();
-
+    with_engine_mut(|engine| {
         let (ax, ay) = to_xy(a, TRIANGLE_X_BOUNDS, TRIANGLE_Y_BOUNDS);
         let (bx, by) = to_xy(b, TRIANGLE_X_BOUNDS, TRIANGLE_Y_BOUNDS);
         let (cx, cy) = to_xy(c, TRIANGLE_X_BOUNDS, TRIANGLE_Y_BOUNDS);
@@ -213,8 +192,7 @@ where
 /// Sets if shapes should be anti-aliased when drawn. This smooths the edges of shapes, but is more
 /// CPU intensive.
 pub fn set_anti_alias(anti_alias: bool) {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+    with_engine_mut(|engine| {
         engine.anti_alias = anti_alias;
     })
 }

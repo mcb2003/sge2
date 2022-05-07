@@ -38,6 +38,46 @@ thread_local! {
 /// Panic message
 const NOT_INIT: &str = "No engine is initialised in this thread";
 
+/// Runs a function, passing it an immutable reference to the currently running engine.
+/// # Panics
+/// This function will panic if:
+///
+/// -   An engine is not running in the current thread
+/// -   The engine is already borrowed mutably. Internally the engine is stored in a [`RefCell`],
+/// so the borrowing rules are checked at runtime.
+///
+/// Note that almost all sge functions internally call either this or [`with_engine_mut`], and
+/// will thus *also* panic in the above situations.
+pub fn with_engine<F, R>(f: F) -> R
+where
+    F: FnOnce(&Engine) -> R,
+{
+    ENGINE.with(|e| {
+        let engine = e.get().expect(NOT_INIT).borrow();
+        f(&*engine)
+    })
+}
+
+/// Runs a function, passing it a mutable reference to the currently running engine.
+/// # Panics
+/// This function will panic if:
+///
+/// -   An engine is not running in the current thread
+/// -   The engine is already borrowed (either mutably or immutably). Internally the engine is
+/// stored in a [`RefCell`], so the borrowing rules are checked at runtime.
+///
+/// Note that almost all sge functions internally call either this or [`with_engine`], and will
+/// thus *also* panic in the above situations.
+pub fn with_engine_mut<F, R>(f: F) -> R
+where
+    F: FnOnce(&mut Engine) -> R,
+{
+    ENGINE.with(|e| {
+        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+        f(&mut *engine)
+    })
+}
+
 /// The return type of most functions in the [`Application`] trait.
 ///
 /// * Returning `Ok(true` continues the application.

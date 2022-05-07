@@ -1,19 +1,15 @@
 use sdl2::render::BlendMode;
 
-use crate::{Color, Point, Rect, ENGINE, NOT_INIT};
+use crate::{with_engine, with_engine_mut, Color, Point, Rect};
 
 /// Get the current blend mode.
 pub fn blend_mode() -> BlendMode {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow();
-        engine.canvas.blend_mode()
-    })
+    with_engine(|e| e.canvas.blend_mode())
 }
 
 /// Clear the canvas to the specified color.
 pub fn clear<C: Into<Color>>(color: C) {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+    with_engine_mut(|engine| {
         engine.canvas.set_draw_color(color);
         engine.canvas.clear()
     })
@@ -21,10 +17,7 @@ pub fn clear<C: Into<Color>>(color: C) {
 
 /// Get the clipping rectangle currently in use (if any).
 pub fn clip_rect() -> Option<Rect> {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow_mut();
-        engine.canvas.clip_rect()
-    })
+    with_engine(|e| e.canvas.clip_rect())
 }
 
 /// Draw a straight line between `start` and `end`, with the specified color.
@@ -35,8 +28,7 @@ where
     P2: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+    with_engine_mut(|engine| {
         engine.canvas.set_draw_color(color);
         engine.canvas.draw_line(start, end)
     })
@@ -48,8 +40,7 @@ where
     P: Into<&'a [Point]>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+    with_engine_mut(|engine| {
         engine.canvas.set_draw_color(color);
         engine.canvas.draw_lines(points)
     })
@@ -61,8 +52,7 @@ where
     P: Into<Point>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+    with_engine_mut(|engine| {
         engine.canvas.set_draw_color(color);
         engine.canvas.draw_point(point)
     })
@@ -74,8 +64,7 @@ where
     P: Into<&'a [Point]>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+    with_engine_mut(|engine| {
         engine.canvas.set_draw_color(color);
         engine.canvas.draw_points(points)
     })
@@ -87,8 +76,7 @@ where
     R: Into<Rect>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+    with_engine_mut(|engine| {
         engine.canvas.set_draw_color(color);
         engine.canvas.draw_rect(rect.into())
     })
@@ -100,8 +88,7 @@ where
     R: Into<&'a [Rect]>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+    with_engine_mut(|engine| {
         engine.canvas.set_draw_color(color);
         engine.canvas.draw_rects(rects.into())
     })
@@ -113,8 +100,7 @@ where
     R: Into<Rect>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+    with_engine_mut(|engine| {
         engine.canvas.set_draw_color(color);
         engine.canvas.fill_rect(rect.into())
     })
@@ -126,8 +112,7 @@ where
     R: Into<&'a [Rect]>,
     C: Into<Color>,
 {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
+    with_engine_mut(|engine| {
         engine.canvas.set_draw_color(color);
         engine.canvas.fill_rects(rects.into())
     })
@@ -135,32 +120,20 @@ where
 
 /// Set the blend mode for alpha blending.
 pub fn set_blend_mode(blend: BlendMode) {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
-        engine.canvas.set_blend_mode(blend)
-    })
+    with_engine_mut(|engine| engine.canvas.set_blend_mode(blend))
 }
 
 /// Set or clear the current clipping rectangle.
 pub fn set_clip_rect<R: Into<Option<Rect>>>(rect: R) {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
-        engine.canvas.set_clip_rect(rect)
-    })
+    with_engine_mut(|engine| engine.canvas.set_clip_rect(rect))
 }
 
 /// Set or clear the current viewport. Any draw calls will be confined to this viewport until it is reset.
 pub fn set_viewport<R: Into<Option<Rect>>>(rect: R) {
-    ENGINE.with(|e| {
-        let mut engine = e.get().expect(NOT_INIT).borrow_mut();
-        engine.canvas.set_viewport(rect)
-    })
+    with_engine_mut(|engine| engine.canvas.set_viewport(rect))
 }
 
 /// Get the current viewport (if any).
 pub fn viewport() -> Rect {
-    ENGINE.with(|e| {
-        let engine = e.get().expect(NOT_INIT).borrow();
-        engine.canvas.viewport()
-    })
+    with_engine(|e| e.canvas.viewport())
 }

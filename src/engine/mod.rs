@@ -6,20 +6,19 @@ use crate::{
 mod error;
 pub use error::EngineBuildError;
 
-pub(crate) struct Engine {
-    pub sdl: sdl2::Sdl,
-    #[allow(dead_code)]
-    video: sdl2::VideoSubsystem,
-    pub canvas: sdl2::render::WindowCanvas,
-    pub texture_creator: sdl2::render::TextureCreator<sdl2::video::WindowContext>,
-    pub events: sdl2::EventPump,
-    pub input: InputState,
+pub struct Engine {
+    pub(crate) sdl: sdl2::Sdl,
+    pub(crate) video: sdl2::VideoSubsystem,
+    pub(crate) canvas: sdl2::render::WindowCanvas,
+    pub(crate) texture_creator: sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+    pub(crate) events: sdl2::EventPump,
+    pub(crate) input: InputState,
     #[cfg(feature = "gfx")]
-    pub anti_alias: bool,
+    pub(crate) anti_alias: bool,
 }
 
 impl Engine {
-    pub fn new(builder: Builder) -> Result<Self, EngineBuildError> {
+    pub(crate) fn new(builder: Builder) -> Result<Self, EngineBuildError> {
         use EngineBuildError as E;
 
         let sdl = sdl2::init()?;
@@ -67,6 +66,22 @@ impl Engine {
             #[cfg(feature = "gfx")]
             anti_alias: builder.anti_alias,
         })
+    }
+
+    /// Obtain an immutable reference to this engine's [SDL context][sdl2::Sdl].
+    ///
+    /// This allows you to easily extend SGE by giving you access to the underlying sdl types.
+    #[inline]
+    pub fn sdl(&self) -> &sdl2::Sdl {
+        &self.sdl
+    }
+
+    /// Obtain an immutable reference to this engine's [`sdl2::VideoSubsystem`].
+    ///
+    /// This allows you to easily extend SGE by giving you access to the underlying sdl types.
+    #[inline]
+    pub fn video(&self) -> &sdl2::VideoSubsystem {
+        &self.video
     }
 
     pub fn update(&mut self) {
